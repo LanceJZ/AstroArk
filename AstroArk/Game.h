@@ -3,7 +3,7 @@
 #include "Globals.h"
 #include "GameLogic.h"
 #include "ThePlayer.h"
-#include "BrickManager.h"
+#include "TheBrickManager.h"
 #include "EnemyControl.h"
 #include "TheBackground.h"
 
@@ -37,6 +37,6 @@ private:
 	//When adding classes to EM, must be heap pointer.
 	TheBackground* BackGround = {};
 	ThePlayer* Player = {};
-	BrickManager* BrickManager = {};
+	TheBrickManager* BrickManager = {};
 	EnemyControl* Enemies = {};
 };

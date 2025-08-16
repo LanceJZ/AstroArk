@@ -6,6 +6,7 @@ Game::Game()
 
 	LogicID = EM.AddCommon(Logic = DBG_NEW GameLogic());
 	BackGroundID = EM.AddCommon(BackGround = DBG_NEW TheBackground());
+	BrickManagerID = EM.AddCommon(BrickManager = DBG_NEW TheBrickManager());
 	EnemiesID = EM.AddCommon(Enemies = DBG_NEW EnemyControl());
 	PlayerID = EM.AddLineModel(Player = DBG_NEW ThePlayer());
 }
@@ -39,6 +40,8 @@ bool Game::Load()
 {
 	Player->SetModel(CM.LoadAndGetLineModel("PlayerShip"));
 	Player->SetFlameModel(CM.LoadAndGetLineModel("PlayerFlame"));
+
+	BrickManager->SetBrickModel(CM.LoadAndGetModel("Brick"));
 
 	return true;
 }

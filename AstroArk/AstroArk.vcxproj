@@ -149,7 +149,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="BrickManager.cpp">
+    <ClCompile Include="TheBrickManager.cpp">
       <SubType>
       </SubType>
     </ClCompile>
@@ -166,13 +166,17 @@
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="TheBrick.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="ThePlayer.cpp">
       <SubType>
       </SubType>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="BrickManager.h">
+    <ClInclude Include="TheBrickManager.h">
       <SubType>
       </SubType>
     </ClInclude>
@@ -186,6 +190,10 @@
     <ClInclude Include="Globals.h" />
     <ClInclude Include="Shot.h" />
     <ClInclude Include="TheBackground.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="TheBrick.h">
       <SubType>
       </SubType>
     </ClInclude>
