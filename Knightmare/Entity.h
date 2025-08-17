@@ -92,6 +92,7 @@ public:
 	float GetAngleFromWorldVectorZ(Vector3& target);
 
 	Vector3 GetVelocityFromAngleZ(float magnitude);
+	Vector3 GetVelocityFromAngleZ(float angle, float magnitude);
 	Vector3 GetVelocityFromVectorZ(Vector3& target, float magnitude);
 	Vector3 GetAccelerationToMaxAtRotation(float accelerationAmount, float topSpeed);
 	Vector3 GetWorldPosition();

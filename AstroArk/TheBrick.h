@@ -18,6 +18,7 @@ public:
 	void Destroy();
 
 private:
-
+	Entity* LeftSide = nullptr;
+	Entity* RightSide = nullptr;
 
 };

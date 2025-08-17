@@ -21,5 +21,6 @@ private:
 	Model BrickModel = { 0 };
 
 	void BuildBricks();
+	void PlaceBricks();
 };
 

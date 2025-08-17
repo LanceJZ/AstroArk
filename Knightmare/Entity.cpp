@@ -63,11 +63,11 @@ void Entity::FixedUpdate(float deltaTime)
 void Entity::Draw3D()
 {
 #ifdef _DEBUG
-	if((Enabled && !EntityOnly) && (Enabled && !IsChild) &&
-		!NoCollision && !HideCollision)
+	if((Enabled && !IsChild && !NoCollision && !HideCollision)
+		|| (Enabled && EntityOnly))
 	{
 		DrawCircle3D(GetWorldPosition(), Radius * Scale,
-			{0}, 0, {150, 50, 200, 200});
+			{0.0f}, 0.0f, {150, 50, 200, 200});
 	}
 #endif
 }
@@ -384,6 +384,11 @@ float Entity::GetAngleFromWorldVectorZ(Vector3& target)
 Vector3 Entity::GetVelocityFromAngleZ(float magnitude)
 {
 	return { cosf(RotationZ) * magnitude, sinf(RotationZ) * magnitude, 0 };
+}
+
+Vector3 Entity::GetVelocityFromAngleZ(float angle, float magnitude)
+{
+	return { cosf(angle) * magnitude, sinf(angle) * magnitude, 0 };
 }
 
 Vector3 Entity::GetVelocityFromVectorZ(Vector3& target, float magnitude)

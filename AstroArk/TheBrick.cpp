@@ -2,6 +2,8 @@
 
 TheBrick::TheBrick()
 {
+	EM.AddEntity(LeftSide = DBG_NEW Entity());
+	EM.AddEntity(RightSide = DBG_NEW Entity());
 }
 
 TheBrick::~TheBrick()
@@ -12,14 +14,25 @@ bool TheBrick::Initialize()
 {
 	Model3D::Initialize();
 
-	return false;
+	LeftSide->Initialize();
+	RightSide->Initialize();
+
+	return true;
 }
 
 bool TheBrick::BeginRun()
 {
 	Model3D::BeginRun();
 
-	return false;
+	LeftSide->Radius = 6.50f;
+	RightSide->Radius = 6.50f;
+	Radius = 6.50f;
+	LeftSide->X(-8.50f);
+	RightSide->X(8.50f);
+	LeftSide->SetParent(*this);
+	RightSide->SetParent(*this);
+
+	return true;
 }
 
 void TheBrick::Update(float deltaTime)

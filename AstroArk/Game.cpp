@@ -38,8 +38,13 @@ bool Game::Initialize() //Initialize
 //..
 bool Game::Load()
 {
+	size_t shotModelID = CM.LoadTheLineModel("Dot");
+
+
 	Player->SetModel(CM.LoadAndGetLineModel("PlayerShip"));
 	Player->SetFlameModel(CM.LoadAndGetLineModel("PlayerFlame"));
+	Player->SetShotModel(CM.GetLineModel(shotModelID));
+
 
 	BrickManager->SetBrickModel(CM.LoadAndGetModel("Brick"));
 

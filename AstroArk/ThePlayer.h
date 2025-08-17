@@ -41,12 +41,17 @@ public:
 	int GetScore();
 
 private:
+	size_t FireRateTimerID = 0;
+
 	int NextNewLifeScore = 10000;
 	int MagazineSize = 4;
+
+	float ShotLifeTime = 4.0f;
 
 	LineModelPoints ShotModel = { };
 	LineModel* Flame = { nullptr };
 
+	void FireShot();
 	void ThrustOn(float amount);
 	void ThrustOff();
 

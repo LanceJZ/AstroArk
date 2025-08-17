@@ -10,6 +10,8 @@ ThePlayer::ThePlayer()
 		Shots.push_back(DBG_NEW Shot());
 		EM.AddLineModel(Shots.back());
 	}
+
+	FireRateTimerID = EM.AddTimer(0.5f);
 }
 
 ThePlayer::~ThePlayer()
@@ -140,6 +142,22 @@ int ThePlayer::GetScore()
 	return Score;
 }
 
+void ThePlayer::FireShot()
+{
+	for (auto& shot : Shots)
+	{
+		if (!shot->Enabled && EM.TimerElapsed(FireRateTimerID))
+		{
+			EM.ResetTimer(FireRateTimerID);
+			Vector3 velocity = GetVelocityFromAngleZ(RotationZ, 375.0f);
+			velocity = Vector3Add(Vector3Multiply(Velocity,
+				{ 0.5f, 0.5f, 0.0f }), velocity);
+			shot->Spawn(Position, velocity, ShotLifeTime);
+			break;
+		}
+	}
+}
+
 void ThePlayer::ThrustOn(float amount)
 {
 	Flame->Enabled = true;
@@ -217,6 +235,7 @@ void ThePlayer::Keyboard()
 	if (IsKeyPressed(KEY_RIGHT_CONTROL) || IsKeyPressed(KEY_LEFT_CONTROL) ||
 		IsKeyPressed(KEY_SPACE))
 	{
+		FireShot();
 	}
 
 	if (IsKeyDown(KEY_DOWN))

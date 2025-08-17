@@ -25,6 +25,7 @@ bool TheBrickManager::Initialize()
 bool TheBrickManager::BeginRun()
 {
 	BuildBricks();
+	PlaceBricks();
 
 	return false;
 }
@@ -37,6 +38,21 @@ void TheBrickManager::Update()
 
 void TheBrickManager::BuildBricks()
 {
+	int bricks = 12;
+	int lines = 8;
+
+	for (int i = 0; i < lines * bricks; i++)
+	{
+		Bricks.push_back(DBG_NEW TheBrick());
+		Bricks.back()->Initialize();
+		EM.AddModel3D(Bricks.back());
+		Bricks.back()->SetModel(BrickModel);
+		Bricks.back()->BeginRun();
+	}
+}
+
+void TheBrickManager::PlaceBricks()
+{
 	float edge = 470.0f;
 	float space = 32.0f;
 	int bricks = 12;
@@ -44,98 +60,58 @@ void TheBrickManager::BuildBricks()
 
 	for (int i = 0; i < bricks; i++)
 	{
-		Bricks.push_back(DBG_NEW TheBrick());
-		Bricks.back()->Initialize();
-		EM.AddModel3D(Bricks.back());
-		Bricks.back()->SetModel(BrickModel);
-		Bricks.back()->BeginRun();
-		Bricks.back()->X(-lineSize + 15 + (float)(i * space));
-		Bricks.back()->Y(edge);
+		Bricks.at(i)->X(-lineSize + 15 + (float)(i * space));
+		Bricks.at(i)->Y(edge);
 	}
 
 	for (int i = 0; i < bricks; i++)
 	{
-		Bricks.push_back(DBG_NEW TheBrick());
-		Bricks.back()->Initialize();
-		EM.AddModel3D(Bricks.back());
-		Bricks.back()->SetModel(BrickModel);
-		Bricks.back()->BeginRun();
-		Bricks.back()->X(-lineSize + 15 + (float)(i * space));
-		Bricks.back()->Y(-edge);
+		Bricks.at(i + (bricks * 1))->X(-lineSize + 15 + (float)(i * space));
+		Bricks.at(i + (bricks * 1))->Y(-edge);
 	}
 
 	for (int i = 0; i < bricks; i++)
 	{
-		Bricks.push_back(DBG_NEW TheBrick());
-		Bricks.back()->Initialize();
-		EM.AddModel3D(Bricks.back());
-		Bricks.back()->SetModel(BrickModel);
-		Bricks.back()->BeginRun();
-		Bricks.back()->X(-edge);
-		Bricks.back()->Y(-lineSize + 15 + (float)(i * space));
-		Bricks.back()->RotationZ = HalfPi;
+		Bricks.at(i + (bricks * 2))->X(-edge);
+		Bricks.at(i + (bricks * 2))->Y(-lineSize + 15 + (float)(i * space));
+		Bricks.at(i + (bricks * 2))->RotationZ = HalfPi;
 	}
 
 	for (int i = 0; i < bricks; i++)
 	{
-		Bricks.push_back(DBG_NEW TheBrick());
-		Bricks.back()->Initialize();
-		EM.AddModel3D(Bricks.back());
-		Bricks.back()->SetModel(BrickModel);
-		Bricks.back()->BeginRun();
-		Bricks.back()->X(edge);
-		Bricks.back()->Y(-lineSize + 15 + (float)(i * space));
-		Bricks.back()->RotationZ = HalfPi;
+		Bricks.at(i + (bricks * 3))->X(edge);
+		Bricks.at(i + (bricks * 3))->Y(-lineSize + 15 + (float)(i * space));
+		Bricks.at(i + (bricks * 3))->RotationZ = HalfPi;
 	}
 
-	float anglespace = 22.5f;
-	float startangle = 15.0f;
+	float aspace = 22.5f;
+	float sangle = 15.0f;
 
 	for (int i = 0; i < bricks; i++)
 	{
-		Bricks.push_back(DBG_NEW TheBrick());
-		Bricks.back()->Initialize();
-		EM.AddModel3D(Bricks.back());
-		Bricks.back()->SetModel(BrickModel);
-		Bricks.back()->BeginRun();
-		Bricks.back()->X((-lineSize - startangle - 1.5f) - (i * anglespace));
-		Bricks.back()->Y((edge - startangle) - (i * anglespace));
-		Bricks.back()->RotationZ = HalfPi / 2.0f;
+		Bricks.at(i + (bricks * 4))->X((-lineSize - sangle - 1.5f) - (i * aspace));
+		Bricks.at(i + (bricks * 4))->Y((edge - sangle) - (i * aspace));
+		Bricks.at(i + (bricks * 4))->RotationZ = HalfPi / 2.0f;
 	}
 
 	for (int i = 0; i < bricks; i++)
 	{
-		Bricks.push_back(DBG_NEW TheBrick());
-		Bricks.back()->Initialize();
-		EM.AddModel3D(Bricks.back());
-		Bricks.back()->SetModel(BrickModel);
-		Bricks.back()->BeginRun();
-		Bricks.back()->X((lineSize + startangle + 1.5f) + (i * anglespace));
-		Bricks.back()->Y((edge - startangle) - (i * anglespace));
-		Bricks.back()->RotationZ = -HalfPi / 2.0f;
+		Bricks.at(i + (bricks * 5))->X((lineSize + sangle + 1.5f) + (i * aspace));
+		Bricks.at(i + (bricks * 5))->Y((edge - sangle) - (i * aspace));
+		Bricks.at(i + (bricks * 5))->RotationZ = -HalfPi / 2.0f;
 	}
 
 	for (int i = 0; i < bricks; i++)
 	{
-		Bricks.push_back(DBG_NEW TheBrick());
-		Bricks.back()->Initialize();
-		EM.AddModel3D(Bricks.back());
-		Bricks.back()->SetModel(BrickModel);
-		Bricks.back()->BeginRun();
-		Bricks.back()->X((-lineSize - startangle - 1.5f) - (i * anglespace));
-		Bricks.back()->Y((-edge + startangle) + (i * anglespace));
-		Bricks.back()->RotationZ = -HalfPi / 2.0f;
+		Bricks.at(i + (bricks * 6))->X((-lineSize - sangle - 1.5f) - (i * aspace));
+		Bricks.at(i + (bricks * 6))->Y((-edge + sangle) + (i * aspace));
+		Bricks.at(i + (bricks * 6))->RotationZ = -HalfPi / 2.0f;
 	}
 
 	for (int i = 0; i < bricks; i++)
 	{
-		Bricks.push_back(DBG_NEW TheBrick());
-		Bricks.back()->Initialize();
-		EM.AddModel3D(Bricks.back());
-		Bricks.back()->SetModel(BrickModel);
-		Bricks.back()->BeginRun();
-		Bricks.back()->X((lineSize + startangle + 1.5f) + (i * anglespace));
-		Bricks.back()->Y((-edge + startangle) + (i * anglespace));
-		Bricks.back()->RotationZ = HalfPi / 2.0f;
+		Bricks.at(i + (bricks * 7))->X((lineSize + sangle + 1.5f) + (i * aspace));
+		Bricks.at(i + (bricks * 7))->Y((-edge + sangle) + (i * aspace));
+		Bricks.at(i + (bricks * 7))->RotationZ = HalfPi / 2.0f;
 	}
 }
