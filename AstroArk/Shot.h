@@ -14,8 +14,10 @@ public:
 	bool BeginRun();
 
 	void Update(float deltaTime);
+	void FixedUpdate(float deltaTime);
 	void Draw3D();
 
+	void Hit(Vector3 position, Vector3 velocity);
 	void Spawn(Vector3 position);
 	void Spawn(Vector3 position, Vector3 velocity);
 	void Spawn(Vector3 position, Vector3 velocity, float lifetime);

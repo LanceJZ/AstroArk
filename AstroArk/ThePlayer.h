@@ -31,7 +31,7 @@ public:
 	void Draw3D();
 
 	void Hit();
-	void Hit(Vector3 location, Vector3 velocity);
+	void Hit(Vector3 position, Vector3 velocity);
 	void ScoreUpdate(int addToScore);
 	void Reset();
 	void Spawn();
@@ -46,7 +46,7 @@ private:
 	int NextNewLifeScore = 10000;
 	int MagazineSize = 4;
 
-	float ShotLifeTime = 4.0f;
+	float ShotLifeTime = 6.0f;
 
 	LineModelPoints ShotModel = { };
 	LineModel* Flame = { nullptr };

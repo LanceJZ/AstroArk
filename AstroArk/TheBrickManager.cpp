@@ -14,6 +14,11 @@ void TheBrickManager::SetBrickModel(Model model)
 	BrickModel = model;
 }
 
+void TheBrickManager::SetPlayerReference(ThePlayer* player)
+{
+	Player = player;
+}
+
 bool TheBrickManager::Initialize()
 {
 	Common::Initialize();
@@ -47,6 +52,7 @@ void TheBrickManager::BuildBricks()
 		Bricks.back()->Initialize();
 		EM.AddModel3D(Bricks.back());
 		Bricks.back()->SetModel(BrickModel);
+		Bricks.back()->SetPlayerReference(Player);
 		Bricks.back()->BeginRun();
 	}
 }

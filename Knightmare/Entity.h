@@ -90,12 +90,15 @@ public:
 	float Z();
 	float GetAngleFromVectorZ(Vector3& target);
 	float GetAngleFromWorldVectorZ(Vector3& target);
+	float GetAngleFromVectorsZ(Vector3& origin, Vector3& target);
 
 	Vector3 GetVelocityFromAngleZ(float magnitude);
 	Vector3 GetVelocityFromAngleZ(float angle, float magnitude);
 	Vector3 GetVelocityFromVectorZ(Vector3& target, float magnitude);
 	Vector3 GetAccelerationToMaxAtRotation(float accelerationAmount, float topSpeed);
 	Vector3 GetWorldPosition();
+	Vector3 GetReflectionVelocity(Vector3& location,
+		Vector3& velocity, float amount, float reduction = 0);
 
 	virtual bool SetCamera(Camera* camera);
 	virtual void SetModel(Model &model, float scale);

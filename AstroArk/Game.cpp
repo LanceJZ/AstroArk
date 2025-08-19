@@ -27,6 +27,8 @@ bool Game::Initialize() //Initialize
 
 	Enemies->SetPlayer(Player);
 
+	BrickManager->SetPlayerReference(Player);
+
 	//Any Entities added after this point need this method fired manually.
 
 	return true;

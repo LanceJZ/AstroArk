@@ -1,6 +1,7 @@
 #pragma once
 #include "Globals.h"
 #include "TheBrick.h"
+#include "ThePlayer.h"
 
 class TheBrickManager : public Common
 {
@@ -11,6 +12,7 @@ public:
 	std::vector<TheBrick*> Bricks;
 
 	void SetBrickModel(Model model);
+	void SetPlayerReference(ThePlayer* player);
 
 	bool Initialize();
 	bool BeginRun();
@@ -22,5 +24,7 @@ private:
 
 	void BuildBricks();
 	void PlaceBricks();
+
+	ThePlayer* Player;
 };
 

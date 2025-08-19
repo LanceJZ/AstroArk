@@ -72,6 +72,8 @@ void ThePlayer::Update(float deltaTime)
 
 void ThePlayer::FixedUpdate(float deltaTime)
 {
+	LineModel::FixedUpdate(deltaTime);
+
 	CheckScreenEdge();
 }
 
@@ -89,10 +91,11 @@ void ThePlayer::Hit()
 	Enabled = false;
 }
 
-void ThePlayer::Hit(Vector3 location, Vector3 velocity)
+void ThePlayer::Hit(Vector3 position, Vector3 velocity)
 {
 	Entity::Hit();
 
+	Velocity = GetReflectionVelocity(position, velocity, 200.0f);
 }
 
 void ThePlayer::ScoreUpdate(int addToScore)
@@ -149,7 +152,7 @@ void ThePlayer::FireShot()
 		if (!shot->Enabled && EM.TimerElapsed(FireRateTimerID))
 		{
 			EM.ResetTimer(FireRateTimerID);
-			Vector3 velocity = GetVelocityFromAngleZ(RotationZ, 375.0f);
+			Vector3 velocity = GetVelocityFromAngleZ(RotationZ, 400.0f);
 			velocity = Vector3Add(Vector3Multiply(Velocity,
 				{ 0.5f, 0.5f, 0.0f }), velocity);
 			shot->Spawn(Position, velocity, ShotLifeTime);

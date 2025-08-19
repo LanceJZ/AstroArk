@@ -31,9 +31,21 @@ void Shot::Update(float deltaTime)
 
 }
 
+void Shot::FixedUpdate(float fixedDeltaTime)
+{
+	LineModel::FixedUpdate(fixedDeltaTime);
+
+	CheckScreenEdge();
+}
+
 void Shot::Draw3D()
 {
 	LineModel::Draw3D();
+}
+
+void Shot::Hit(Vector3 position, Vector3 velocity)
+{
+	Velocity = GetReflectionVelocity(position, velocity, 200.0f);
 }
 
 void Shot::Spawn(Vector3 position)

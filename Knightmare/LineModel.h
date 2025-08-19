@@ -11,6 +11,8 @@ public:
 	virtual bool BeginRun();
 	virtual void Input();
 	virtual void Update(float deltaTime);
+	virtual void AlwaysUpdate(float deltaTime);
+	virtual void FixedUpdate(float deltaTime);
 	virtual void Draw3D();
 
 	LineModelPoints GetLineModel();

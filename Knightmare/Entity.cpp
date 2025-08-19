@@ -381,6 +381,11 @@ float Entity::GetAngleFromWorldVectorZ(Vector3& target)
 	return (atan2f(target.y - GetWorldPosition().y, target.x - GetWorldPosition().x));
 }
 
+float Entity::GetAngleFromVectorsZ(Vector3& origin, Vector3& target)
+{
+		return { atan2f(target.y - origin.y, target.x - origin.x) };
+}
+
 Vector3 Entity::GetVelocityFromAngleZ(float magnitude)
 {
 	return { cosf(RotationZ) * magnitude, sinf(RotationZ) * magnitude, 0 };
@@ -422,6 +427,14 @@ Vector3 Entity::GetWorldPosition()
 	AfterCalculate();
 
 	return worldPosition;
+}
+
+Vector3 Entity::GetReflectionVelocity(Vector3& position,
+	Vector3& velocity, float amount, float reduction)
+{
+	return Vector3Add(Vector3Multiply(Vector3Multiply(Velocity, {reduction}), {-1}),
+		Vector3Add(Vector3Multiply(velocity, {reduction}),
+			GetVelocityFromAngleZ(GetAngleFromVectorsZ(position, Position),	amount)));
 }
 
 

@@ -17,6 +17,16 @@ void LineModel::Update(float deltaTime)
 	ModelColor.a = (char)Alpha;
 }
 
+void LineModel::FixedUpdate(float deltaTime)
+{
+	if (Enabled) Entity::FixedUpdate(deltaTime);
+}
+
+void LineModel::AlwaysUpdate(float deltaTime)
+{
+	Entity::AlwaysUpdate(deltaTime);
+}
+
 void LineModel::Draw3D()
 {
 	Entity::Draw3D();

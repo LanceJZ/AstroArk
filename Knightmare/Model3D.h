@@ -13,14 +13,13 @@ public:
 
 	bool SetCamera(Camera* camera);
 	void SetModelWithTexture(Model &model, Texture2D &texture);
-	void Input();
-	bool Initialize();
-	bool BeginRun();
-	void Update(float deltaTime);
-	void AlwaysUpdate(float deltaTime);
-	void FixedUpdate(float deltaTime);
-	void Draw3D();
-	void Draw2D();
+	virtual void Input();
+	virtual bool Initialize();
+	virtual bool BeginRun();
+	virtual void Update(float deltaTime);
+	virtual void FixedUpdate(float deltaTime);
+	virtual void AlwaysUpdate(float deltaTime);
+	virtual void Draw3D();
 
 	void SetModel(Model &model, float scale);
 	void SetModel(Model &model);
