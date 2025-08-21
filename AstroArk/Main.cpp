@@ -99,6 +99,8 @@ int WinMain()
 		EndMode3D();
 		EM.Draw2D();
 		game.Draw2D();
+		Score.Draw2D();
+		HighScore.Draw2D();
 
 #ifdef _DEBUG
 		DrawFPS(5, 5);

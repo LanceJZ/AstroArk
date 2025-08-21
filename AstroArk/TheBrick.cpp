@@ -82,6 +82,7 @@ void TheBrick::Hit(Vector3 position, Vector3 velocity)
 	if (Health <= 0)
 	{
 		Player->ScoreUpdate(Points);
+		Score.AddToScore(Points);
 		Destroy();
 		return;
 	}

@@ -27,6 +27,9 @@ bool GameLogic::Initialize()
 
 	State = MainMenu;
 
+	Score.SetPosition(335, 0);
+	HighScore.SetPosition(1000, 0);
+
 	return true;
 }
 
