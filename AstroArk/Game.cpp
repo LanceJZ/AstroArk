@@ -51,6 +51,14 @@ bool Game::Load()
 
 	BrickManager->SetBrickModel(CM.LoadAndGetModel("Brick"));
 
+	LineModelPoints rockModels[4];
+
+	rockModels[0] = CM.LoadAndGetLineModel("Rock1");
+	rockModels[1] = CM.LoadAndGetLineModel("Rock2");
+	rockModels[2] = CM.LoadAndGetLineModel("Rock3");
+	rockModels[3] = CM.LoadAndGetLineModel("Rock4");
+
+	Enemies->SetRockModels(rockModels);
 	Enemies->SetUFOModel(CM.LoadAndGetLineModel("UFO"));
 	Enemies->SetShotModel(CM.GetLineModel(shotModelID));
 
@@ -59,6 +67,7 @@ bool Game::Load()
 	Player->SetSounds(CM.LoadAndGetSound("PlayerExplode"),
 		CM.LoadAndGetSound("PlayerFire"), CM.LoadAndGetSound("PlayerThrust"));
 
+	Enemies->SetRockExplodeSound(CM.LoadAndGetSound("RockExplode"));
 	Enemies->SetUFOSounds(CM.LoadAndGetSound("UFOExplode"),
 		CM.LoadAndGetSound("UFOFire"), CM.LoadAndGetSound("UFOBig"));
 

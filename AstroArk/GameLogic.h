@@ -56,7 +56,8 @@ private:
 	void PlayerShipDisplay();
 	void AddPlayerShipModels(int number);
 	void GamePlay();
-	void CheckUFOCollusions();
+	void CheckUFOBrickCollusions();
+	void CheckRockCollusions();
 	void IsOver();
 	void InMainMenu();
 	void IsPaused();

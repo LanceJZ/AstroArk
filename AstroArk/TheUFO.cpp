@@ -95,6 +95,11 @@ void TheUFO::Destroy()
 	PlaySound(ExplodeSound);
 }
 
+void TheUFO::Reset()
+{
+	Enabled = false;
+}
+
 void TheUFO::FireShot()
 {
 	if (Player->GameOver) return;

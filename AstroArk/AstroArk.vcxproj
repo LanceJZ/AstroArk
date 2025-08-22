@@ -174,6 +174,10 @@
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="TheRock.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="TheUFO.cpp">
       <SubType>
       </SubType>
@@ -202,6 +206,10 @@
       </SubType>
     </ClInclude>
     <ClInclude Include="ThePlayer.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="TheRock.h">
       <SubType>
       </SubType>
     </ClInclude>

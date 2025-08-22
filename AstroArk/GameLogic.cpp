@@ -79,6 +79,30 @@ void GameLogic::NewGame()
 
 bool GameLogic::CheckPlayerClear()
 {
+	for (const auto& rock : Enemies->Rocks)
+	{
+		if (rock->Enabled && rock->CirclesIntersect(*PlayerClear))
+		{
+			return false;
+		}
+	}
+
+	for (const auto& ufo : Enemies->UFOs)
+	{
+		if (ufo->Enabled && ufo->CirclesIntersect(*PlayerClear))
+		{
+			return false;
+		}
+
+		for (const auto& Shot : ufo->Shots)
+		{
+			if (Shot->Enabled && Shot->CirclesIntersect(*PlayerClear))
+			{
+				return false;
+			}
+		}
+	}
+
 	return true;
 }
 
@@ -125,7 +149,8 @@ void GameLogic::AddPlayerShipModels(int number)
 
 void GameLogic::GamePlay()
 {
-	CheckUFOCollusions();
+	CheckUFOBrickCollusions();
+	CheckRockCollusions();
 
 	if (Player->GetBeenHit())
 	{
@@ -133,6 +158,7 @@ void GameLogic::GamePlay()
 
 		Player->Hit();
 		Player->BeenHit = false;
+		PlayerShipDisplay();
 
 		if (State == Player->GameOver)
 		{
@@ -145,29 +171,25 @@ void GameLogic::GamePlay()
 
 	if (!Player->Enabled && !Player->GetBeenHit())
 	{
-		//PlayerClear->Enabled = true;
-		//PlayerClear->Radius = 140.0f;
+		PlayerClear->Enabled = true;
+		PlayerClear->Radius = 140.0f;
 
-		Player->Spawn();
-		PlayerClear->Enabled = false;
-		PlayerShipDisplay();
 
 		if (IsKeyPressed(KEY_ENTER) ||
 			(IsGamepadButtonPressed(0, GAMEPAD_BUTTON_MIDDLE_RIGHT)))
 		{
-			//PlayerClear->Radius = Player->Radius * 1.5f;
+			PlayerClear->Radius = Player->Radius * 1.5f;
 		}
 
 		if (CheckPlayerClear())
 		{
-			//Player->Spawn();
-			//PlayerClear->Enabled = false;
-			//PlayerShipDisplay();
+			Player->Spawn();
+			PlayerClear->Enabled = false;
 		}
 	}
 }
 
-void GameLogic::CheckUFOCollusions()
+void GameLogic::CheckUFOBrickCollusions()
 {
 	for (const auto& brick : BrickManager->Bricks)
 	{
@@ -175,6 +197,8 @@ void GameLogic::CheckUFOCollusions()
 		{
 			for (const auto& ufo : Enemies->UFOs)
 			{
+				if (!ufo->Enabled) continue;
+
 				if (brick->CirclesIntersect(*ufo) && ufo->Enabled)
 				{
 					ufo->Hit(brick->Position, { 0.0f });
@@ -199,11 +223,31 @@ void GameLogic::CheckUFOCollusions()
 	}
 }
 
+void GameLogic::CheckRockCollusions()
+{
+	for (const auto& rock : Enemies->Rocks)
+	{
+		if (rock->Enabled)
+		{
+			for (const auto& brick : BrickManager->Bricks)
+			{
+				if (brick->Enabled)
+				{
+					if (rock->CirclesIntersect(*brick))
+					{
+						rock->Hit(brick->Position, { 0.0f });
+					}
+				}
+			}
+		}
+	}
+}
+
 void GameLogic::IsOver()
 {
 	State = MainMenu;
 	GameEnded = true;
-	CheckUFOCollusions();
+	CheckUFOBrickCollusions();
 }
 
 void GameLogic::InMainMenu()
@@ -228,7 +272,7 @@ void GameLogic::InMainMenu()
 		}
 	}
 
-	CheckUFOCollusions();
+	CheckUFOBrickCollusions();
 }
 
 void GameLogic::IsPaused()

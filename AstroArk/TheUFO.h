@@ -20,6 +20,7 @@ public:
 
 	void Spawn();
 	void Destroy();
+	void Reset();
 
 private:
 	size_t VectorChangeTimerID = 0;
