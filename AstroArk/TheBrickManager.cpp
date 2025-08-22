@@ -19,6 +19,12 @@ void TheBrickManager::SetPlayerReference(ThePlayer* player)
 	Player = player;
 }
 
+void TheBrickManager::SetSounds(Sound hitSound, Sound destroySound)
+{
+	HitSound = hitSound;
+	DestroySound = destroySound;
+}
+
 bool TheBrickManager::Initialize()
 {
 	Common::Initialize();
@@ -39,6 +45,20 @@ void TheBrickManager::Update()
 {
 	Common::Update();
 
+	for (const auto& brick : Bricks)
+	{
+		if (brick->Enabled) break;
+
+		NewGame();
+	}
+}
+
+void TheBrickManager::NewGame()
+{
+	for (const auto& brick : Bricks)
+	{
+		brick->Enabled = true;
+	}
 }
 
 void TheBrickManager::BuildBricks()
@@ -53,6 +73,7 @@ void TheBrickManager::BuildBricks()
 		EM.AddModel3D(Bricks.back());
 		Bricks.back()->SetModel(BrickModel);
 		Bricks.back()->SetPlayerReference(Player);
+		Bricks.back()->SetSounds(HitSound, DestroySound);
 		Bricks.back()->BeginRun();
 	}
 }

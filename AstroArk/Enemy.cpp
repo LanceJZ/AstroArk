@@ -72,12 +72,13 @@ void Enemy::CheckShotsHitPlayer()
 {
 	for (const auto shot : Shots)
 	{
+		if (Player->BeenHit || !Player->Enabled) break;
+
 		if (!shot->Enabled) continue;
 
 		if (shot->CirclesIntersect(*Player))
 		{
-			Player->Hit(shot->Position, shot->Velocity);
-			Player->Hit();
+			Player->BeenHit = true;
 			shot->Destroy();
 			break;
 		}
@@ -129,9 +130,6 @@ void Enemy::Destroy()
 
 void Enemy::Hit(Vector3 position, Vector3 velocity)
 {
-
-	Entity::Hit();
-
 	Velocity = GetReflectionVelocity(position, velocity, 200.0f);
 }
 
@@ -205,27 +203,30 @@ bool Enemy::CheckCollisions()
 {
 	for (const auto& shot : Player->Shots)
 	{
+		if (!shot->Enabled) continue;
+
 		if (shot->CirclesIntersect(*this))
 		{
 			shot->Hit(Position, { 0.0f });
 			Hit();
+			Destroy();
 
 			if (Player->GameOver) return true;
 
 			Score.AddToScore(Points);
-			//Player->ScoreUpdate(Points);
 
 			return true;
 		}
 	}
 
-	if (!Player->GetBeenHit())
+	if (Player->Enabled && !Player->BeenHit)
 	{
 		if (CirclesIntersect(*Player))
 		{
-			Player->Hit(Position, { 0.0f });
-			Hit(Player->Position, { 0.0f });
-			//Player->ScoreUpdate(Points);
+			Player->BeenHit = true;
+			Hit();
+			Destroy();
+			Score.AddToScore(Points);
 
 			return true;
 		}

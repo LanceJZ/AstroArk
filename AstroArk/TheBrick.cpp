@@ -17,6 +17,12 @@ void TheBrick::SetPlayerReference(ThePlayer* player)
 	Player = player;
 }
 
+void TheBrick::SetSounds(Sound hitSound, Sound destroySound)
+{
+	HitSound = hitSound;
+	DestroySound = destroySound;
+}
+
 bool TheBrick::Initialize()
 {
 	Model3D::Initialize();
@@ -80,6 +86,23 @@ void TheBrick::Destroy()
 
 void TheBrick::Hit(Vector3 position, Vector3 velocity)
 {
+
+	if (EM.TimerElapsed(HitTimerID))
+	{
+		PlaySound(DestroySound);
+		Destroy();
+		return;
+	}
+
+	EM.ResetTimer(HitTimerID);
+	//Velocity = GetReflectionVelocity(position, velocity, 100.0f, 0.5f);
+
+}
+
+void TheBrick::PlayerHit()
+{
+	PlaySound(HitSound);
+
 	if (EM.TimerElapsed(HitTimerID)) Health--;
 ;
 	EM.ResetTimer(HitTimerID);
@@ -87,12 +110,10 @@ void TheBrick::Hit(Vector3 position, Vector3 velocity)
 	if (Health <= 0)
 	{
 		Score.AddToScore(Points);
+		PlaySound(DestroySound);
 		Destroy();
 		return;
 	}
-
-	//Velocity = GetReflectionVelocity(position, velocity, 100.0f, 0.5f);
-
 }
 
 void TheBrick::CheckCollision()
@@ -105,7 +126,7 @@ void TheBrick::CheckCollision()
 			LeftSide->CirclesIntersect(*shot) ||
 			RightSide->CirclesIntersect(*shot))
 		{
-			Hit(shot->Position, shot->Velocity);
+			PlayerHit();
 			shot->Hit(Position, { 0.0f });
 		}
 	}
@@ -114,7 +135,7 @@ void TheBrick::CheckCollision()
 	{
 		if (CirclesIntersect(*Player))
 		{
-			Hit(Player->Position, Player->Velocity);
+			PlayerHit();
 			Player->Hit(Position, Player->Velocity);
 		}
 	}

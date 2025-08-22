@@ -54,6 +54,17 @@ bool Game::Load()
 	Enemies->SetUFOModel(CM.LoadAndGetLineModel("UFO"));
 	Enemies->SetShotModel(CM.GetLineModel(shotModelID));
 
+	//Sounds
+
+	Player->SetSounds(CM.LoadAndGetSound("PlayerExplode"),
+		CM.LoadAndGetSound("PlayerFire"), CM.LoadAndGetSound("PlayerThrust"));
+
+	Enemies->SetUFOSounds(CM.LoadAndGetSound("UFOExplode"),
+		CM.LoadAndGetSound("UFOFire"), CM.LoadAndGetSound("UFOBig"));
+
+	BrickManager->SetSounds(CM.LoadAndGetSound("BossHit"),
+		CM.LoadAndGetSound("PowerUp"));
+
 	return true;
 }
 

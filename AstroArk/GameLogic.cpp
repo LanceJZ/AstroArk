@@ -31,7 +31,8 @@ bool GameLogic::Initialize()
 
 	AdjustedFieldSize = Vector2Multiply(FieldSize, { 0.5f, 0.5f });
 
-	State = InPlay;
+	State = MainMenu;
+	GameEnded = true;
 
 	Score.SetPosition(335, 0);
 	HighScore.SetPosition(1000, 0);
@@ -43,7 +44,6 @@ bool GameLogic::BeginRun()
 {
 	Common::BeginRun();
 
-	GameEnded = true;
 
 	return false;
 }
@@ -57,45 +57,10 @@ void GameLogic::FixedUpdate()
 {
 	Common::FixedUpdate();
 
-	if (State == Pause)
-	{
-		if (IsKeyPressed(KEY_P) || (IsGamepadAvailable(0)
-			&& IsGamepadButtonPressed(0, 13)))
-		{
-			State = InPlay;
-			Player->Paused = false;
-		}
-
-		return;
-	}
-	if (State == MainMenu)
-	{
-		if (!GameEnded)
-		{
-		}
-		else
-		{
-			if (IsGamepadAvailable(0))
-			{
-				if (IsGamepadButtonPressed(0, 15))//Start button
-				{
-					NewGame();
-				}
-			}
-			else if (IsKeyPressed(KEY_N))
-			{
-				NewGame();
-			}
-		}
-	}
-	else if (State == Player->GameOver)
-	{
-		IsOver();
-	}
-	else if (State == InPlay)
-	{
-		GamePlay();
-	}
+	if (State == Pause) IsPaused();
+	if (State == MainMenu) InMainMenu();
+	if (State == Player->GameOver) IsOver();
+	if (State == InPlay) GamePlay();
 }
 
 void GameLogic::Input()
@@ -106,6 +71,10 @@ void GameLogic::NewGame()
 {
 	Player->NewGame();
 	Enemies->NewGame();
+	BrickManager->NewGame();
+	GameEnded = false;
+	State = InPlay;
+	PlayerShipDisplay();
 }
 
 bool GameLogic::CheckPlayerClear()
@@ -113,7 +82,92 @@ bool GameLogic::CheckPlayerClear()
 	return true;
 }
 
+void GameLogic::PlayerShipDisplay()
+{
+	Vector2 location = { (-GetScreenWidth() / 2.05f) + Player->Radius,
+		(-GetScreenHeight() / 2) + Player->Radius * 2.0f + 30.0f };
+
+	if (Player->Lives > (int)PlayerShipModels.size())
+	{
+		AddPlayerShipModels(Player->Lives - (int)PlayerShipModels.size());
+	}
+
+	if (Player->Lives > (int)PlayerShipModels.size())
+	{
+		return;
+	}
+
+	for (const auto& model : PlayerShipModels)
+	{
+		model->Enabled = false;
+		model->Position = { location.x, location.y, 0.0f };
+		location.x += Player->Radius * 2.0f;
+	}
+
+	for (int i = 0; i < Player->Lives; i++)
+	{
+		PlayerShipModels.at(i)->Enabled = true;
+	}
+}
+
+void GameLogic::AddPlayerShipModels(int number)
+{
+	for (int i = 0; i < number; i++)
+	{
+		PlayerShipModels.push_back(DBG_NEW LineModel());
+		EM.AddLineModel(PlayerShipModels.back());
+		PlayerShipModels.back()->SetModel(Player->GetLineModel());
+		PlayerShipModels.back()->RotationZ = PI / 2 + PI;
+		PlayerShipModels.back()->Scale = 0.8f;
+		PlayerShipModels.back()->Radius = 0.0f;
+	}
+}
+
 void GameLogic::GamePlay()
+{
+	CheckUFOCollusions();
+
+	if (Player->GetBeenHit())
+	{
+		//EM.ResetTimer(ExplodeTimerID);
+
+		Player->Hit();
+		Player->BeenHit = false;
+
+		if (State == Player->GameOver)
+		{
+			IsOver();
+			return;
+		}
+	}
+
+	//if (!EM.TimerElapsed(ExplodeTimerID)) return;
+
+	if (!Player->Enabled && !Player->GetBeenHit())
+	{
+		//PlayerClear->Enabled = true;
+		//PlayerClear->Radius = 140.0f;
+
+		Player->Spawn();
+		PlayerClear->Enabled = false;
+		PlayerShipDisplay();
+
+		if (IsKeyPressed(KEY_ENTER) ||
+			(IsGamepadButtonPressed(0, GAMEPAD_BUTTON_MIDDLE_RIGHT)))
+		{
+			//PlayerClear->Radius = Player->Radius * 1.5f;
+		}
+
+		if (CheckPlayerClear())
+		{
+			//Player->Spawn();
+			//PlayerClear->Enabled = false;
+			//PlayerShipDisplay();
+		}
+	}
+}
+
+void GameLogic::CheckUFOCollusions()
 {
 	for (const auto& brick : BrickManager->Bricks)
 	{
@@ -136,50 +190,55 @@ void GameLogic::GamePlay()
 						brick->RightSide->CirclesIntersect(*shot))
 					{
 						shot->Hit(brick->Position, { 0.0f });
+						brick->Hit(shot->Position, shot->Velocity);
 						break;
 					}
 				}
 			}
-
-
-		}
-	}
-
-
-	if (Player->GetBeenHit())
-	{
-		//EM.ResetTimer(ExplodeTimerID);
-
-		Player->Destroy();
-
-	}
-
-	//if (!EM.TimerElapsed(ExplodeTimerID)) return;
-
-	if (!Player->Enabled && !Player->GetBeenHit())
-	{
-		//PlayerClear->Enabled = true;
-		//PlayerClear->Radius = 140.0f;
-
-			Player->Spawn();
-			PlayerClear->Enabled = false;
-
-		if (IsKeyPressed(KEY_ENTER) ||
-			(IsGamepadButtonPressed(0, GAMEPAD_BUTTON_MIDDLE_RIGHT)))
-		{
-			//PlayerClear->Radius = Player->Radius * 1.5f;
-		}
-
-		if (CheckPlayerClear())
-		{
-			//Player->Spawn();
-			//PlayerClear->Enabled = false;
-			//PlayerShipDisplay();
 		}
 	}
 }
 
 void GameLogic::IsOver()
 {
+	State = MainMenu;
+	GameEnded = true;
+	CheckUFOCollusions();
+}
 
+void GameLogic::InMainMenu()
+{
+	if (!GameEnded)
+	{
+	}
+	else
+	{
+		DrawText("N to Start Game", 500, 400, 40, WHITE);
+
+		if (IsGamepadAvailable(0))
+		{
+			if (IsGamepadButtonPressed(0, 15))//Start button
+			{
+				NewGame();
+			}
+		}
+		else if (IsKeyPressed(KEY_N))
+		{
+			NewGame();
+		}
+	}
+
+	CheckUFOCollusions();
+}
+
+void GameLogic::IsPaused()
+{
+		if (IsKeyPressed(KEY_P) || (IsGamepadAvailable(0)
+			&& IsGamepadButtonPressed(0, 13)))
+		{
+			State = InPlay;
+			Player->Paused = false;
+		}
+
+		return;
 }

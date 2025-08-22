@@ -49,8 +49,15 @@ private:
 	EnemyControl* Enemies = {};
 	TheBrickManager* BrickManager = {};
 
+	std::vector <LineModel*> PlayerShipModels;
+
 	bool CheckPlayerClear();
 
+	void PlayerShipDisplay();
+	void AddPlayerShipModels(int number);
 	void GamePlay();
+	void CheckUFOCollusions();
 	void IsOver();
+	void InMainMenu();
+	void IsPaused();
 };

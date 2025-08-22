@@ -13,13 +13,19 @@ public:
 
 	void SetBrickModel(Model model);
 	void SetPlayerReference(ThePlayer* player);
+	void SetSounds(Sound hitSound, Sound destroySound);
 
 	bool Initialize();
 	bool BeginRun();
 
 	void Update();
 
+	void NewGame();
+
 private:
+	Sound HitSound;
+	Sound DestroySound;
+
 	Model BrickModel = { 0 };
 
 	void BuildBricks();

@@ -10,6 +10,13 @@ TheUFO::~TheUFO()
 {
 }
 
+void TheUFO::SetSounds(Sound explode, Sound fire, Sound active)
+{
+	ExplodeSound = explode;
+	FireSound = fire;
+	ActiveSound = active;
+}
+
 bool TheUFO::Initialize()
 {
 	Enemy::Initialize();
@@ -20,6 +27,8 @@ bool TheUFO::Initialize()
 bool TheUFO::BeginRun()
 {
 	Enemy::BeginRun();
+
+	SetSoundVolume(ActiveSound, 0.5f);
 
 	return false;
 }
@@ -33,6 +42,8 @@ void TheUFO::Update(float deltaTime)
 	if (EM.TimerElapsed(VectorChangeTimerID)) ChangeVector();
 
 	if (EM.TimerElapsed(FireShotTimerID)) FireShot();
+
+	if (!IsSoundPlaying(ActiveSound) && !Player->GameOver) PlaySound(ActiveSound);
 }
 
 void TheUFO::AlwaysUpdate(float deltaTime)
@@ -81,10 +92,14 @@ void TheUFO::Destroy()
 {
 	Enemy::Destroy();
 
+	PlaySound(ExplodeSound);
 }
 
 void TheUFO::FireShot()
 {
+	if (Player->GameOver) return;
+
+	PlaySound(FireSound);
 
 	float angle = 0;
 	float shotSpeed = 325;

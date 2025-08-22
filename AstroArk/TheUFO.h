@@ -11,6 +11,8 @@ public:
 	bool Initialize();
 	bool BeginRun();
 
+	void SetSounds(Sound explode, Sound fire, Sound active);
+
 	void Update(float deltaTime);
 	void AlwaysUpdate(float deltaTime);
 	void FixedUpdate(float deltaTime);
@@ -24,6 +26,10 @@ private:
 	size_t FireShotTimerID = 0;
 
 	unsigned int WaveNumber = 0;
+
+	Sound ExplodeSound = { 0 };
+	Sound FireSound = { 0 };
+	Sound ActiveSound = { 0 };
 
 	void FireShot();
 	void ChangeVector();

@@ -11,11 +11,13 @@ public:
 	bool NewLife = false;
 	bool GameOver = false;
 	bool Paused = false;
+	int Lives = 0;
 
 	std::vector<Shot*> Shots = {};
 
 	void SetFlameModel(LineModelPoints model);
 	void SetShotModel(LineModelPoints model);
+	void SetSounds(Sound explode, Sound fire, Sound thrust);
 
 	bool Initialize();
 	bool BeginRun();
@@ -25,6 +27,7 @@ public:
 	void FixedUpdate(float deltaTime);
 	void AlwaysUpdate(float deltaTime);
 	void Draw3D();
+	void Draw2D();
 
 	void Hit();
 	void Hit(Vector3 position, Vector3 velocity);
@@ -37,9 +40,12 @@ private:
 
 	int NextNewLifeScore = 10000;
 	int MagazineSize = 4;
-	int Lives = 0;
 
 	float ShotLifeTime = 6.0f;
+
+	Sound ExplodeSound;
+	Sound FireSound;
+	Sound ThrustSound;
 
 	LineModelPoints ShotModel = { };
 	LineModel* Flame = { nullptr };

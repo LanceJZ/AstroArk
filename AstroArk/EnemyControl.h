@@ -14,6 +14,8 @@ public:
 	void SetUFOModel(LineModelPoints model);
 	void SetShotModel(LineModelPoints model);
 
+	void SetUFOSounds(Sound explode, Sound fire, Sound active);
+
 	bool Initialize();
 	bool BeginRun();
 
@@ -26,6 +28,10 @@ private:
 
 	LineModelPoints UFOModel = {};
 	LineModelPoints ShotModel = {};
+
+	Sound UFOExplodeSound;
+	Sound UFOFireSound;
+	Sound UFOActiveSound;
 
 	ThePlayer *Player = nullptr;
 

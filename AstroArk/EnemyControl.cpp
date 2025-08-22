@@ -24,6 +24,13 @@ void EnemyControl::SetShotModel(LineModelPoints model)
 	ShotModel = model;
 }
 
+void EnemyControl::SetUFOSounds(Sound explode, Sound fire, Sound active)
+{
+	UFOExplodeSound = explode;
+	UFOFireSound = fire;
+	UFOActiveSound = active;
+}
+
 bool EnemyControl::Initialize()
 {
 	Common::Initialize();
@@ -77,6 +84,7 @@ void EnemyControl::SpawnUFO()
 		UFOs.push_back(DBG_NEW TheUFO());
 		EM.AddLineModel(UFOs.back(), UFOModel);
 		UFOs.back()->SetShotModel(ShotModel);
+		UFOs.back()->SetSounds(UFOExplodeSound, UFOFireSound, UFOActiveSound);
 		UFOs.back()->SetPlayer(Player);
 		UFOs.back()->BeginRun();
 

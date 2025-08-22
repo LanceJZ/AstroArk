@@ -33,11 +33,20 @@ void ThePlayer::SetShotModel(LineModelPoints model)
 	ShotModel = model;
 }
 
+void ThePlayer::SetSounds(Sound explode, Sound fire, Sound thrust)
+{
+	ExplodeSound = explode;
+	FireSound = fire;
+	ThrustSound = thrust;
+}
+
 bool ThePlayer::Initialize()
 {
 	LineModel::Initialize();
 
 	Flame->Enabled = false;
+	Enabled = false;
+	GameOver = true;
 
 	return false;
 }
@@ -87,19 +96,32 @@ void ThePlayer::Draw3D()
 
 }
 
+void ThePlayer::Draw2D()
+{
+	LineModel::Draw2D();
+
+}
+
 void ThePlayer::Hit()
 {
 	Entity::Hit();
 
+	PlaySound(ExplodeSound);
+
+	Enabled = false;
+	Flame->Enabled = false;
 	Acceleration = { 0 };
 	Velocity = { 0 };
 	Lives--;
+
+	if (Lives <= 0)
+	{
+		GameOver = true;
+	}
 }
 
 void ThePlayer::Hit(Vector3 position, Vector3 velocity)
 {
-	Entity::Hit();
-
 	Velocity = GetReflectionVelocity(position, velocity, 200.0f);
 }
 
@@ -129,6 +151,7 @@ void ThePlayer::FireShot()
 	{
 		if (!shot->Enabled && EM.TimerElapsed(FireRateTimerID))
 		{
+			PlaySound(FireSound);
 			EM.ResetTimer(FireRateTimerID);
 			Vector3 velocity = GetVelocityFromAngleZ(RotationZ, 400.0f);
 			velocity = Vector3Add(Vector3Multiply(Velocity,
@@ -141,6 +164,8 @@ void ThePlayer::FireShot()
 
 void ThePlayer::ThrustOn(float amount)
 {
+	if (!IsSoundPlaying(ThrustSound)) PlaySound(ThrustSound);
+
 	Flame->Enabled = true;
 	Acceleration = GetAccelerationToMaxAtRotation((amount * 50.25f), 350.0f);
 
@@ -150,6 +175,8 @@ void ThePlayer::ThrustOff()
 {
 	Flame->Enabled = false;
 	SetAccelerationToZero(0.45f);
+
+	StopSound(ThrustSound);
 }
 
 void ThePlayer::Gamepad()
