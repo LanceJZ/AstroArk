@@ -211,8 +211,6 @@ bool Enemy::CheckCollisions()
 			Hit();
 			Destroy();
 
-			if (Player->GameOver) return true;
-
 			Score.AddToScore(Points);
 
 			return true;
@@ -223,12 +221,38 @@ bool Enemy::CheckCollisions()
 	{
 		if (CirclesIntersect(*Player))
 		{
+			if (Player->Shield->Enabled)
+			{
+				Player->ShieldHit(Position, { 0.0f });
+				return false;
+			}
+
 			Player->BeenHit = true;
 			Hit();
 			Destroy();
 			Score.AddToScore(Points);
 
 			return true;
+		}
+
+		for (const auto& shot : Shots)
+		{
+			if (!shot->Enabled) continue;
+
+			if (shot->CirclesIntersect(*Player))
+			{
+				if (Player->Shield->Enabled)
+				{
+					Player->ShieldHit(Position, { 0.0f });
+					return false;
+				}
+
+				Player->BeenHit = true;
+				shot->Hit(Position, { 0.0f });
+				Hit();
+				Destroy();
+				Score.AddToScore(Points);
+			}
 		}
 	}
 

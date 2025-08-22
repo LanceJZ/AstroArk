@@ -157,6 +157,12 @@ bool TheRock::CheckCollisions()
 	{
 		//if (!Player->Shield->Enabled) Hit();
 
+		if (Player->Shield->Enabled)
+		{
+			Player->ShieldHit(Position, { 0.0f });
+			return false;
+		}
+
 		Hit();
 		Player->BeenHit = true;
 		SetScore();

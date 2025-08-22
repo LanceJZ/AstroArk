@@ -38,7 +38,7 @@ int WinMain()
 	int windowHeight = 960; //height
 	int windowWidth = 1280; //width
 
-	InitWindow(windowWidth, windowHeight, "AstroArk - Alpha 0.01");
+	InitWindow(windowWidth, windowHeight, "AstroArk - Alpha 0.04");
 	InitAudioDevice();
 
 	Image icon = LoadImage("icon.png");

@@ -4,6 +4,7 @@ ThePlayer::ThePlayer()
 {
 
 	EM.AddLineModel(Flame = DBG_NEW LineModel());
+	EM.AddLineModel(Shield = DBG_NEW LineModel());
 
 	for (int i = 0; i < MagazineSize; i++)
 	{
@@ -33,11 +34,19 @@ void ThePlayer::SetShotModel(LineModelPoints model)
 	ShotModel = model;
 }
 
-void ThePlayer::SetSounds(Sound explode, Sound fire, Sound thrust)
+void ThePlayer::SetShieldModel(LineModelPoints model)
+{
+	Shield->SetModel(model);
+}
+
+void ThePlayer::SetSounds(Sound explode, Sound fire, Sound thrust,
+		Sound shieldOn, Sound shieldHit)
 {
 	ExplodeSound = explode;
 	FireSound = fire;
 	ThrustSound = thrust;
+	ShieldOnSound = shieldOn;
+	ShieldHitSound = shieldHit;
 }
 
 bool ThePlayer::Initialize()
@@ -45,6 +54,7 @@ bool ThePlayer::Initialize()
 	LineModel::Initialize();
 
 	Flame->Enabled = false;
+	Shield->Enabled = false;
 	Enabled = false;
 	GameOver = true;
 
@@ -56,6 +66,7 @@ bool ThePlayer::BeginRun()
 	LineModel::BeginRun();
 
 	Flame->SetParent(*this);
+	Shield->SetParent(*this);
 
 	return false;
 }
@@ -82,6 +93,7 @@ void ThePlayer::FixedUpdate(float deltaTime)
 {
 	LineModel::FixedUpdate(deltaTime);
 
+	ShieldPowerDrain(deltaTime);
 	CheckScreenEdge();
 }
 
@@ -120,6 +132,12 @@ void ThePlayer::Hit()
 	}
 }
 
+void ThePlayer::ShieldHit(Vector3 position, Vector3 velocity)
+{
+	Hit(position, velocity);
+	PlaySound(ShieldHitSound);
+}
+
 void ThePlayer::Hit(Vector3 position, Vector3 velocity)
 {
 	Velocity = GetReflectionVelocity(position, velocity, 200.0f);
@@ -130,6 +148,8 @@ void ThePlayer::Reset()
 	Position = { 0, 0, 0 };
 	Velocity = { 0, 0, 0 };
 	Enabled = true;
+	ShieldPower = 100.0f;
+	Shield->ModelColor = WHITE;
 }
 
 void ThePlayer::Spawn()
@@ -177,6 +197,43 @@ void ThePlayer::ThrustOff()
 	SetAccelerationToZero(0.45f);
 
 	StopSound(ThrustSound);
+}
+
+void ThePlayer::ShieldOn()
+{
+	if (ShieldPower > 0.0f)
+	{
+		Shield->Enabled = true;
+
+		if (!IsSoundPlaying(ShieldOnSound)) PlaySound(ShieldOnSound);
+		{
+			Shield->Alpha = ShieldPower * 2.55f;
+		}
+	}
+	else
+	{
+		ShieldOff();
+	}
+}
+
+void ThePlayer::ShieldOff()
+{
+	StopSound(ShieldOnSound);
+	Shield->Enabled = false;
+}
+
+void ThePlayer::ShieldPowerDrain(float deltaTime)
+{
+	if (Shield->Enabled)
+	{
+		ShieldPower -= ShieldDrainRate * deltaTime;
+
+		if (ShieldPower < 0.0f)	ShieldPower = 0.0f;
+	}
+	else
+	{
+		if (ShieldPower < 100.0f) ShieldPower += ShieldRechargeRate * deltaTime;
+	}
 }
 
 void ThePlayer::Gamepad()
@@ -238,6 +295,15 @@ void ThePlayer::Keyboard()
 	else
 	{
 		ThrustOff();
+	}
+
+	if (IsKeyDown(KEY_DOWN) || IsKeyDown(KEY_S))
+	{
+		ShieldOn();
+	}
+	else
+	{
+		ShieldOff();
 	}
 
 	if (IsKeyPressed(KEY_RIGHT_CONTROL) || IsKeyPressed(KEY_LEFT_CONTROL) ||

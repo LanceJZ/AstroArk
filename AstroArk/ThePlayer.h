@@ -13,11 +13,14 @@ public:
 	bool Paused = false;
 	int Lives = 0;
 
+	LineModel* Shield = {};
 	std::vector<Shot*> Shots = {};
 
 	void SetFlameModel(LineModelPoints model);
 	void SetShotModel(LineModelPoints model);
-	void SetSounds(Sound explode, Sound fire, Sound thrust);
+	void SetShieldModel(LineModelPoints model);
+	void SetSounds(Sound explode, Sound fire, Sound thrust,
+		Sound shieldOn, Sound shieldHit);
 
 	bool Initialize();
 	bool BeginRun();
@@ -30,6 +33,7 @@ public:
 	void Draw2D();
 
 	void Hit();
+	void ShieldHit(Vector3 position, Vector3 velocity);
 	void Hit(Vector3 position, Vector3 velocity);
 	void Reset();
 	void Spawn();
@@ -38,14 +42,20 @@ public:
 private:
 	size_t FireRateTimerID = 0;
 
-	int NextNewLifeScore = 10000;
-	int MagazineSize = 4;
+	unsigned int NextNewLifeScore = 10000;
+	unsigned int MagazineSize = 4;
+
+	float ShieldPower = 0.0f;
+	float ShieldDrainRate = 0.0f;
+	float ShieldRechargeRate = 0.0f;
 
 	float ShotLifeTime = 6.0f;
 
-	Sound ExplodeSound;
-	Sound FireSound;
-	Sound ThrustSound;
+	Sound ExplodeSound = {};
+	Sound FireSound = {};
+	Sound ThrustSound = {};
+	Sound ShieldOnSound = {};
+	Sound ShieldHitSound = {};
 
 	LineModelPoints ShotModel = { };
 	LineModel* Flame = { nullptr };
@@ -53,6 +63,9 @@ private:
 	void FireShot();
 	void ThrustOn(float amount);
 	void ThrustOff();
+	void ShieldOn();
+	void ShieldOff();
+	void ShieldPowerDrain(float deltaTime);
 
 	void Gamepad();
 	void Keyboard();

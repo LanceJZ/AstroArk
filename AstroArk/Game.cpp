@@ -47,6 +47,7 @@ bool Game::Load()
 	Player->SetModel(CM.LoadAndGetLineModel("PlayerShip"));
 	Player->SetFlameModel(CM.LoadAndGetLineModel("PlayerFlame"));
 	Player->SetShotModel(CM.GetLineModel(shotModelID));
+	Player->SetShieldModel(CM.LoadAndGetLineModel("PlayerShield"));
 
 
 	BrickManager->SetBrickModel(CM.LoadAndGetModel("Brick"));
@@ -65,7 +66,8 @@ bool Game::Load()
 	//Sounds
 
 	Player->SetSounds(CM.LoadAndGetSound("PlayerExplode"),
-		CM.LoadAndGetSound("PlayerFire"), CM.LoadAndGetSound("PlayerThrust"));
+		CM.LoadAndGetSound("PlayerFire"), CM.LoadAndGetSound("PlayerThrust"),
+		CM.LoadAndGetSound("PlayerShieldOn"), CM.LoadAndGetSound("PlayerShieldHit"));
 
 	Enemies->SetRockExplodeSound(CM.LoadAndGetSound("RockExplode"));
 	Enemies->SetUFOSounds(CM.LoadAndGetSound("UFOExplode"),
