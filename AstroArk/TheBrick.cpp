@@ -56,6 +56,11 @@ void TheBrick::FixedUpdate(float deltaTime)
 	CheckScreenEdge();
 }
 
+void TheBrick::AlwaysUpdate(float deltaTime)
+{
+	Model3D::AlwaysUpdate(deltaTime);
+}
+
 void TheBrick::Draw3D()
 {
 	Model3D::Draw3D();
@@ -81,7 +86,6 @@ void TheBrick::Hit(Vector3 position, Vector3 velocity)
 
 	if (Health <= 0)
 	{
-		Player->ScoreUpdate(Points);
 		Score.AddToScore(Points);
 		Destroy();
 		return;
@@ -108,12 +112,10 @@ void TheBrick::CheckCollision()
 
 	if (Player->Enabled)
 	{
-		if (CirclesIntersect(*Player) ||
-			LeftSide->CirclesIntersect(*Player) ||
-			RightSide->CirclesIntersect(*Player))
+		if (CirclesIntersect(*Player))
 		{
 			Hit(Player->Position, Player->Velocity);
-			Player->Hit(Position, { 0.0f });
+			Player->Hit(Position, Player->Velocity);
 		}
 	}
 

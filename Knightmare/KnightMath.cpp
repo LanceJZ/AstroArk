@@ -44,7 +44,7 @@ float KnightMath::GetRandomFloat(float min, float max)
 		return 0;
 	}
 
-	if (true)
+	if (false)
 	{
 		//Old Random Number Generator.
 		std::default_random_engine randEngine(RandomDevice());
@@ -52,7 +52,7 @@ float KnightMath::GetRandomFloat(float min, float max)
 
 		return urdRand(randEngine);
 	}
-	else if (true)
+	else if (false)
 	{
 		std::uniform_real_distribution<> urd(min, max);
 

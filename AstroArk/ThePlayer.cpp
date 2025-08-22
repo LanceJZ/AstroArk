@@ -28,7 +28,6 @@ void ThePlayer::SetShotModel(LineModelPoints model)
 	for (auto& shot : Shots)
 	{
 		shot->SetModel(model);
-		shot->BeginRun();
 	}
 
 	ShotModel = model;
@@ -77,6 +76,11 @@ void ThePlayer::FixedUpdate(float deltaTime)
 	CheckScreenEdge();
 }
 
+void ThePlayer::AlwaysUpdate(float deltaTime)
+{
+	LineModel::AlwaysUpdate(deltaTime);
+}
+
 void ThePlayer::Draw3D()
 {
 	LineModel::Draw3D();
@@ -85,10 +89,11 @@ void ThePlayer::Draw3D()
 
 void ThePlayer::Hit()
 {
+	Entity::Hit();
+
 	Acceleration = { 0 };
 	Velocity = { 0 };
 	Lives--;
-	Enabled = false;
 }
 
 void ThePlayer::Hit(Vector3 position, Vector3 velocity)
@@ -96,23 +101,6 @@ void ThePlayer::Hit(Vector3 position, Vector3 velocity)
 	Entity::Hit();
 
 	Velocity = GetReflectionVelocity(position, velocity, 200.0f);
-}
-
-void ThePlayer::ScoreUpdate(int addToScore)
-{
-	Score += addToScore;
-
-	if (Score > HighScore)
-	{
-		HighScore = Score;
-	}
-
-	if (Score > NextNewLifeScore)
-	{
-		NextNewLifeScore += 10000;
-		Lives++;
-		NewLife = true;
-	}
 }
 
 void ThePlayer::Reset()
@@ -124,25 +112,15 @@ void ThePlayer::Reset()
 
 void ThePlayer::Spawn()
 {
+	Reset();
 }
 
 void ThePlayer::NewGame()
 {
 	Lives = 4;
 	NextNewLifeScore = 10000;
-	Score = 0;
 	GameOver = false;
 	Reset();
-}
-
-void ThePlayer::SetHighScore(int highScore)
-{
-	HighScore = highScore;
-}
-
-int ThePlayer::GetScore()
-{
-	return Score;
 }
 
 void ThePlayer::FireShot()

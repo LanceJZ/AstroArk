@@ -3,6 +3,7 @@
 GameLogic::GameLogic()
 {
 
+	EM.AddEntity(PlayerClear = DBG_NEW Entity());
 }
 
 GameLogic::~GameLogic()
@@ -19,13 +20,18 @@ void GameLogic::SetEnemies(EnemyControl* enemies)
 	Enemies = enemies;
 }
 
+void GameLogic::SetBrickManager(TheBrickManager* brickManager)
+{
+	BrickManager = brickManager;
+}
+
 bool GameLogic::Initialize()
 {
 	Common::Initialize();
 
 	AdjustedFieldSize = Vector2Multiply(FieldSize, { 0.5f, 0.5f });
 
-	State = MainMenu;
+	State = InPlay;
 
 	Score.SetPosition(335, 0);
 	HighScore.SetPosition(1000, 0);
@@ -102,10 +108,78 @@ void GameLogic::NewGame()
 	Enemies->NewGame();
 }
 
+bool GameLogic::CheckPlayerClear()
+{
+	return true;
+}
+
 void GameLogic::GamePlay()
 {
+	for (const auto& brick : BrickManager->Bricks)
+	{
+		if (brick->Enabled)
+		{
+			for (const auto& ufo : Enemies->UFOs)
+			{
+				if (brick->CirclesIntersect(*ufo) && ufo->Enabled)
+				{
+					ufo->Hit(brick->Position, { 0.0f });
+					break;
+				}
+
+				for (const auto& shot : ufo->Shots)
+				{
+					if (!shot->Enabled) continue;
+
+					if (brick->CirclesIntersect(*shot) ||
+						brick->LeftSide->CirclesIntersect(*shot) ||
+						brick->RightSide->CirclesIntersect(*shot))
+					{
+						shot->Hit(brick->Position, { 0.0f });
+						break;
+					}
+				}
+			}
+
+
+		}
+	}
+
+
+	if (Player->GetBeenHit())
+	{
+		//EM.ResetTimer(ExplodeTimerID);
+
+		Player->Destroy();
+
+	}
+
+	//if (!EM.TimerElapsed(ExplodeTimerID)) return;
+
+	if (!Player->Enabled && !Player->GetBeenHit())
+	{
+		//PlayerClear->Enabled = true;
+		//PlayerClear->Radius = 140.0f;
+
+			Player->Spawn();
+			PlayerClear->Enabled = false;
+
+		if (IsKeyPressed(KEY_ENTER) ||
+			(IsGamepadButtonPressed(0, GAMEPAD_BUTTON_MIDDLE_RIGHT)))
+		{
+			//PlayerClear->Radius = Player->Radius * 1.5f;
+		}
+
+		if (CheckPlayerClear())
+		{
+			//Player->Spawn();
+			//PlayerClear->Enabled = false;
+			//PlayerShipDisplay();
+		}
+	}
 }
 
 void GameLogic::IsOver()
 {
+
 }

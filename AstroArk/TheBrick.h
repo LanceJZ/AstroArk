@@ -8,6 +8,9 @@ public:
 	TheBrick();
 	virtual ~TheBrick();
 
+	Entity* LeftSide = nullptr;
+	Entity* RightSide = nullptr;
+
 	void SetPlayerReference(ThePlayer* player);
 
 	bool Initialize();
@@ -15,6 +18,7 @@ public:
 
 	void Update(float deltaTime);
 	void FixedUpdate(float fixedDeltaTime);
+	void AlwaysUpdate(float deltaTime);
 	void Draw3D();
 
 	void Spawn(Vector3 position);
@@ -25,9 +29,6 @@ private:
 
 	unsigned int Health = 4;
 	unsigned int Points = 100;
-
-	Entity* LeftSide = nullptr;
-	Entity* RightSide = nullptr;
 
 	ThePlayer* Player = nullptr;
 

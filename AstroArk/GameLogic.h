@@ -2,6 +2,7 @@
 #include "Globals.h"
 #include "ThePlayer.h"
 #include "EnemyControl.h"
+#include "TheBrickManager.h"
 
 enum GameState
 {
@@ -28,6 +29,7 @@ public:
 
 	void SetPlayer(ThePlayer* player);
 	void SetEnemies(EnemyControl* enemies);
+	void SetBrickManager(TheBrickManager* brickManager);
 
 	bool Initialize();
 	bool BeginRun();
@@ -41,8 +43,13 @@ private:
 	bool GameEnded = false;
 	Vector2 AdjustedFieldSize = {};
 
+	Entity* PlayerClear = {};
+
 	ThePlayer* Player = {};
 	EnemyControl* Enemies = {};
+	TheBrickManager* BrickManager = {};
+
+	bool CheckPlayerClear();
 
 	void GamePlay();
 	void IsOver();

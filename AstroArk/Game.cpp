@@ -24,6 +24,7 @@ bool Game::Initialize() //Initialize
 
 	Logic->SetPlayer(Player);
 	Logic->SetEnemies(Enemies);
+	Logic->SetBrickManager(BrickManager);
 
 	Enemies->SetPlayer(Player);
 
@@ -36,7 +37,7 @@ bool Game::Initialize() //Initialize
 
 //..
 // Model Names:
-// PlayerShip, PlayerFlame,
+// PlayerShip, PlayerFlame, Brick, UFO, Dot
 //..
 bool Game::Load()
 {
@@ -49,6 +50,9 @@ bool Game::Load()
 
 
 	BrickManager->SetBrickModel(CM.LoadAndGetModel("Brick"));
+
+	Enemies->SetUFOModel(CM.LoadAndGetLineModel("UFO"));
+	Enemies->SetShotModel(CM.GetLineModel(shotModelID));
 
 	return true;
 }

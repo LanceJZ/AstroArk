@@ -48,7 +48,19 @@ void Enemy::Update(float deltaTime)
 {
 	LineModel::Update(deltaTime);
 
-	if (!Player->GameOver && !IsSoundPlaying(OnSound)) PlaySound(OnSound);
+	CheckCollisions();
+
+	//if (!Player->GameOver && !IsSoundPlaying(OnSound)) PlaySound(OnSound);
+}
+
+void Enemy::FixedUpdate(float deltaTime)
+{
+	LineModel::FixedUpdate(deltaTime);
+}
+
+void Enemy::AlwaysUpdate(float deltaTime)
+{
+	LineModel::AlwaysUpdate(deltaTime);
 }
 
 void Enemy::Draw3D()
@@ -65,6 +77,7 @@ void Enemy::CheckShotsHitPlayer()
 		if (shot->CirclesIntersect(*Player))
 		{
 			Player->Hit(shot->Position, shot->Velocity);
+			Player->Hit();
 			shot->Destroy();
 			break;
 		}
@@ -73,7 +86,7 @@ void Enemy::CheckShotsHitPlayer()
 
 void Enemy::Spawn()
 {
-	if (!Player->GameOver) PlaySound(SpawnSound);
+	//if (!Player->GameOver) PlaySound(SpawnSound);
 
 	Vector3 position = { 0.0f, 0.0f, 0.0f };
 
@@ -92,9 +105,7 @@ void Enemy::Hit()
 {
 	Entity::Hit();
 
-	if (!Player->GameOver) PlaySound(ExplodeSound);
 
-	Destroy();
 }
 
 void Enemy::Reset()
@@ -114,6 +125,14 @@ void Enemy::Destroy()
 {
 	Entity::Destroy();
 
+}
+
+void Enemy::Hit(Vector3 position, Vector3 velocity)
+{
+
+	Entity::Hit();
+
+	Velocity = GetReflectionVelocity(position, velocity, 200.0f);
 }
 
 void Enemy::Shoot()
@@ -188,12 +207,13 @@ bool Enemy::CheckCollisions()
 	{
 		if (shot->CirclesIntersect(*this))
 		{
-			shot->Destroy();
+			shot->Hit(Position, { 0.0f });
 			Hit();
 
 			if (Player->GameOver) return true;
 
-			Player->ScoreUpdate(Points);
+			Score.AddToScore(Points);
+			//Player->ScoreUpdate(Points);
 
 			return true;
 		}
@@ -203,11 +223,9 @@ bool Enemy::CheckCollisions()
 	{
 		if (CirclesIntersect(*Player))
 		{
-
-			Hit();
-			Player->ScoreUpdate(Points);
-
-			Player->Hit(Position, Velocity);
+			Player->Hit(Position, { 0.0f });
+			Hit(Player->Position, { 0.0f });
+			//Player->ScoreUpdate(Points);
 
 			return true;
 		}

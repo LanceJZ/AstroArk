@@ -19,6 +19,7 @@
 
 ContentManager CM = {};
 EntityManager EM = {};
+FactoryManager FM = {};
 KnightMath M = {};
 ParticleManager Particles = {};
 Camera TheCamera = {};
@@ -67,9 +68,13 @@ int WinMain()
 
 	game.Initialize();
 	EM.Initialize();
+	FM.Initialize();
+	M.Initialize();
 	game.Load();
 	game.BeginRun();
 	EM.BeginRun();
+	FM.BeginRun();
+	M.BeginRun();
 
 	while (!WindowShouldClose())
 	{
@@ -79,6 +84,7 @@ int WinMain()
 #if _DEBUG
 		if (deltaTime > 0.05f) deltaTime = 0.05f;
 #endif
+		EM.AlwaysUpdate(deltaTime);
 
 		if (game.Logic->State != GameState::Pause &&
 			game.Logic->State != GameState::Ended)

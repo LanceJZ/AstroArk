@@ -14,8 +14,8 @@ public:
 
 	int WindowFullWidth = 0;
 	int WindowFullHeight = 0;
-	int WindowHalfWidth = { 0 };
-	int WindowHalfHeight = { 0 };
+	int WindowHalfWidth = 0;
+	int WindowHalfHeight = 0;
 
 	virtual bool Initialize();
 	virtual bool BeginRun();

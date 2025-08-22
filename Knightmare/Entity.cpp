@@ -106,8 +106,7 @@ void Entity::Spawn()
 void Entity::Spawn(Vector3 position)
 {
 	Position = position;
-
-	Spawn();
+	Entity::Spawn();
 }
 
 void Entity::Hit()
