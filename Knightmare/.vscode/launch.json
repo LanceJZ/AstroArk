@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
-      "cwd": "s:/Documents/Visual Studio 2022/Projects/C++/raylib/AstroArk/Knightmare",
-      "program": "s:/Documents/Visual Studio 2022/Projects/C++/raylib/AstroArk/Knightmare/build/Debug/outDebug",
+      "cwd": "s:/Documents/Visual Studio 2022/Projects/C++/raylib/Missile Command/Knightmare",
+      "program": "s:/Documents/Visual Studio 2022/Projects/C++/raylib/Missile Command/Knightmare/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [

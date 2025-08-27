@@ -63,11 +63,12 @@ void Entity::FixedUpdate(float deltaTime)
 void Entity::Draw3D()
 {
 #ifdef _DEBUG
-	if((Enabled && !IsChild && !NoCollision && !HideCollision)
-		|| (Enabled && EntityOnly))
+	if((Enabled && ShowCollision) || (Enabled && !EntityOnly) &&
+		(Enabled && !IsChild && !HideCollision) &&
+		!NoCollision)
 	{
 		DrawCircle3D(GetWorldPosition(), Radius * Scale,
-			{0.0f}, 0.0f, {150, 50, 200, 200});
+			{0}, 0, {150, 50, 200, 200});
 	}
 #endif
 }
@@ -106,7 +107,8 @@ void Entity::Spawn()
 void Entity::Spawn(Vector3 position)
 {
 	Position = position;
-	Entity::Spawn();
+	Enabled = true;
+	BeenHit = false;
 }
 
 void Entity::Hit()
@@ -160,6 +162,10 @@ bool Entity::CirclesIntersect(Vector3& targetPosition, float targetRadius)
 bool Entity::CirclesIntersect(Entity& target)
 {
 	if (!target.Enabled || !Enabled) return false;
+
+	Vector3 targetPosition = targetPosition = target.Position;
+
+	if (target.IsChild) targetPosition = target.GetWorldPosition();
 
 	return CirclesIntersect(target.Position, (target.Radius * target.Scale));
 }
@@ -380,29 +386,72 @@ float Entity::GetAngleFromWorldVectorZ(Vector3& target)
 	return (atan2f(target.y - GetWorldPosition().y, target.x - GetWorldPosition().x));
 }
 
+float Entity::GetAngleFromVectors(Vector3& target)
+{
+	return (atan2f(target.y - Position.y, target.x - Position.x));
+}
+
 float Entity::GetAngleFromVectorsZ(Vector3& origin, Vector3& target)
 {
-		return { atan2f(target.y - origin.y, target.x - origin.x) };
+	return { atan2f(target.y - origin.y, target.x - origin.x) };
 }
 
-Vector3 Entity::GetVelocityFromAngleZ(float magnitude)
+float Entity::GetRotationTowardsTargetZ(Vector3& origin, Vector3& target,
+	float facingAngle, float magnitude)
 {
-	return { cosf(RotationZ) * magnitude, sinf(RotationZ) * magnitude, 0 };
+	float turnVelocity = 0;
+	float targetAngle = GetAngleFromVectorsZ(origin, target);
+	float targetLessFacing = targetAngle - facingAngle;
+	float facingLessTarget = facingAngle - targetAngle;
+
+	if (abs(targetLessFacing) > PI)
+	{
+		if (facingAngle > targetAngle)
+		{
+			facingLessTarget = (((PI *2) - facingAngle) + targetAngle) * -1;
+		}
+		else
+		{
+			facingLessTarget = ((PI * 2) - targetAngle) + facingAngle;
+		}
+	}
+
+	if (facingLessTarget > 0)
+	{
+		turnVelocity = -magnitude;
+	}
+	else
+	{
+		turnVelocity = magnitude;
+	}
+
+	return turnVelocity;
 }
 
-Vector3 Entity::GetVelocityFromAngleZ(float angle, float magnitude)
+Vector3& Entity::GetVelocityFromAngleZ(float angle, float magnitude)
 {
-	return { cosf(angle) * magnitude, sinf(angle) * magnitude, 0 };
+	Vector3 velocity = { cosf(angle) * magnitude, sinf(angle) * magnitude, 0 };
+
+	return velocity;
 }
 
-Vector3 Entity::GetVelocityFromVectorZ(Vector3& target, float magnitude)
+Vector3& Entity::GetVelocityFromAngleZ(float magnitude)
+{
+	Vector3 velocity = { cosf(RotationZ) * magnitude, sinf(RotationZ) * magnitude, 0 };
+
+	return velocity;
+}
+
+Vector3& Entity::GetVelocityFromVectorZ(Vector3& target, float magnitude)
 {
 	float angle = (atan2f(target.y - Position.y, target.x - Position.x));
 
-	return { cosf(angle) * magnitude, sinf(angle) * magnitude, 0 };;
+	Vector3 velocity = { cosf(angle) * magnitude, sinf(angle) * magnitude, 0 };
+
+	return velocity;
 }
 
-Vector3 Entity::GetAccelerationToMaxAtRotation(float accelerationAmount, float topSpeed)
+Vector3& Entity::GetAccelerationToMaxAtRotation(float accelerationAmount, float topSpeed)
 {
 	Vector3 acceleration = { 0, 0, 0 };
 
@@ -417,7 +466,19 @@ Vector3 Entity::GetAccelerationToMaxAtRotation(float accelerationAmount, float t
 	return acceleration;
 }
 
-Vector3 Entity::GetWorldPosition()
+Vector3& Entity::GetReflectionVelocity(Vector3& position,
+	Vector3& velocity, float amountReflect,
+	float reductionHit, float reductionLoss)
+{
+	Vector3 reflection = Vector3Add(Vector3Multiply(Vector3Multiply(Velocity,
+		{reductionLoss}), {-1}),
+		Vector3Add(Vector3Multiply(velocity, {reductionHit}),
+			GetVelocityFromAngleZ(GetAngleFromVectorsZ(position, Position),
+				amountReflect)));
+	return reflection;
+}
+
+Vector3& Entity::GetWorldPosition()
 {
 	BeforeCalculate();
 	CalculateWorldVectors();
@@ -428,28 +489,6 @@ Vector3 Entity::GetWorldPosition()
 	return worldPosition;
 }
 
-Vector3 Entity::GetReflectionVelocity(Vector3& position,
-	Vector3& velocity, float amount, float reduction)
-{
-	return Vector3Add(Vector3Multiply(Vector3Multiply(Velocity, {reduction}), {-1}),
-		Vector3Add(Vector3Multiply(velocity, {reduction}),
-			GetVelocityFromAngleZ(GetAngleFromVectorsZ(position, Position),	amount)));
-}
-
-
-//Sets Acceleration down to zero over time based on deceleration amount.
-void Entity::SetAccelerationToZero(float decelerationAmount)
-{
-	if (Velocity.x > 0.01 || Velocity.y > 0.01 ||
-		Velocity.x < -0.01 || Velocity.y < -0.01)
-	{
-		Acceleration = (Velocity * -decelerationAmount) * DeltaTime;
-	}
-	else
-	{
-		Velocity = { 0, 0, 0 };
-	}
-}
 
 void Entity::SetParent(Entity& parent)
 {
@@ -635,12 +674,101 @@ void Entity::CheckPlayfieldHeightWarp(float top, float bottom)
 	}
 }
 
+void Entity::LeavePlay(float turnSpeed, float speed)
+{
+	float stageLeft = 0;
+	float stageDown = 0;
+
+	if (Position.x > 0)
+	{
+		stageLeft = WindowHalfWidth;
+	}
+	else
+	{
+		stageLeft = -WindowHalfWidth;
+	}
+
+	if (Position.y > 0)
+	{
+		stageDown = WindowHalfHeight;
+	}
+	else
+	{
+		stageDown = -WindowHalfHeight;
+	}
+
+	Vector3 position = { stageLeft, stageDown, 0 };
+
+	SetRotateVelocity(position, turnSpeed, speed);
+}
+
 void Entity::Reset()
 {
 	Position = { 0, 0, 0 };
 	Acceleration = { 0, 0, 0 };
 	Velocity = { 0, 0, 0 };
 	RotationVelocityY = 0;
+}
+
+void Entity::SetAccelerationToMaxAtRotation(float accelerationAmount, float topSpeed)
+{
+	Acceleration = GetAccelerationToMaxAtRotation(accelerationAmount, topSpeed);
+}
+
+void Entity::SetAccelerationToZero(float decelerationAmount)
+{
+	if (Velocity.x > 0.01 || Velocity.y > 0.01 ||
+		Velocity.x < -0.01 || Velocity.y < -0.01)
+	{
+		Acceleration = (Velocity * -decelerationAmount) * DeltaTime;
+	}
+	else
+	{
+		Velocity = { 0, 0, 0 };
+	}
+}
+
+void Entity::SetRotateVelocity(Vector3& position, float turnSpeed, float speed)
+{
+	RotationVelocityZ = GetRotationTowardsTargetZ(Position, position, RotationZ,
+		turnSpeed);
+	Velocity = GetVelocityFromAngleZ(RotationZ, speed);
+}
+
+void Entity::SetRotationZFromVector(Vector3& target)
+{
+	RotationZ = GetAngleFromVectors(target);
+}
+
+void Entity::SetAimAtTargetZ(Vector3& target, float facingAngle, float magnitude)
+{
+	float turnVelocity = 0;
+	float targetAngle = GetAngleFromVectors(target); //This is why it is here.
+	float targetLessFacing = targetAngle - facingAngle;
+	float facingLessTarget = facingAngle - targetAngle;
+
+	if (abs(targetLessFacing) > PI)
+	{
+		if (facingAngle > targetAngle)
+		{
+			facingLessTarget = ((TwoPi - facingAngle) + targetAngle) * -1;
+		}
+		else
+		{
+			facingLessTarget = (TwoPi - targetAngle) + facingAngle;
+		}
+	}
+
+	if (facingLessTarget > 0)
+	{
+		turnVelocity = -magnitude;
+	}
+	else
+	{
+		turnVelocity = magnitude;
+	}
+
+	RotationVelocityZ = turnVelocity;
 }
 
 void Entity::BeforeCalculate()

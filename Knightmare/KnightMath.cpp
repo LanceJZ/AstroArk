@@ -44,7 +44,7 @@ float KnightMath::GetRandomFloat(float min, float max)
 		return 0;
 	}
 
-	if (false)
+	if (true)
 	{
 		//Old Random Number Generator.
 		std::default_random_engine randEngine(RandomDevice());
@@ -52,7 +52,7 @@ float KnightMath::GetRandomFloat(float min, float max)
 
 		return urdRand(randEngine);
 	}
-	else if (false)
+	else if (true)
 	{
 		std::uniform_real_distribution<> urd(min, max);
 
@@ -163,28 +163,4 @@ Quaternion KnightMath::EulerToQuaternion(float yaw, float pitch, float roll)
 		sinf(rollDev) * sinf(pitchDev) * sinf(yawDev);
 
 	return {quaternionX, quaternionY, quaternionZ, quaternionW};
-}
-
-void KnightMath::SetRotationZTowardsTargetZ(Vector3& target, float magnitude)
-{
-}
-
-void KnightMath::SetAccelerationToMaxAtRotation(float accelerationAmount, float topSpeed)
-{
-}
-
-void KnightMath::SetAccelerationToZero(float decelerationAmount)
-{
-}
-
-void KnightMath::SetRotateVelocity(Vector3& position, float turnSpeed, float speed)
-{
-}
-
-void KnightMath::SetRotationZFromVector(Vector3& target)
-{
-}
-
-void KnightMath::SetAimAtTargetZ(Vector3& target, float facingAngle, float magnitute)
-{
 }

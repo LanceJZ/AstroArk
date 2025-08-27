@@ -37,13 +37,17 @@ bool TheBrick::BeginRun()
 {
 	Model3D::BeginRun();
 
-	LeftSide->Radius = 6.50f;
-	RightSide->Radius = 6.50f;
+	LeftSide->Radius = 4.50f;
+	RightSide->Radius = 4.50f;
 	Radius = 6.50f;
-	LeftSide->X(-8.50f);
-	RightSide->X(8.50f);
+	LeftSide->X(-10.750f);
+	RightSide->X(10.750f);
 	LeftSide->SetParent(*this);
 	RightSide->SetParent(*this);
+	LeftSide->ShowCollision = true;
+	RightSide->ShowCollision = true;
+	ShowCollision = true;
+	ModelColor = Color ( 130.0f, 20.0f, 255.0f, 255.0f );
 
 	return true;
 }
@@ -74,14 +78,23 @@ void TheBrick::Draw3D()
 
 void TheBrick::Spawn(Vector3 position)
 {
-	Entity::Spawn(position);
+	Model3D::Spawn(position);
 
+}
+
+void TheBrick::Spawn()
+{
+	Entity::Spawn();
+	LeftSide->Spawn();
+	RightSide->Spawn();
 }
 
 void TheBrick::Destroy()
 {
 	Entity::Destroy();
 
+	LeftSide->Destroy();
+	RightSide->Destroy();
 }
 
 void TheBrick::Hit(Vector3 position, Vector3 velocity)
@@ -89,7 +102,8 @@ void TheBrick::Hit(Vector3 position, Vector3 velocity)
 
 	if (EM.TimerElapsed(HitTimerID))
 	{
-		PlaySound(DestroySound);
+		if (!Player->GameOver) PlaySound(DestroySound);
+
 		Destroy();
 		return;
 	}
@@ -110,7 +124,9 @@ void TheBrick::PlayerHit()
 	if (Health <= 0)
 	{
 		Score.AddToScore(Points);
-		PlaySound(DestroySound);
+
+		if (!Player->GameOver) PlaySound(DestroySound);
+
 		Destroy();
 		return;
 	}
@@ -133,11 +149,20 @@ void TheBrick::CheckCollision()
 
 	if (Player->Enabled)
 	{
+		if (Player->Shield->Enabled)
+		{
+			if (CirclesIntersect(*Player->Shield))
+			{
+				Player->ShieldHit(Position, { 0.0f });
+			}
+		}
+
 		if (CirclesIntersect(*Player))
 		{
 			PlayerHit();
-			Player->Hit(Position, Player->Velocity);
+			{
+				Player->Hit(Position, { 0.0f });
+			}
 		}
 	}
-
 }

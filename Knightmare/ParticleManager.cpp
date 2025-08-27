@@ -30,7 +30,7 @@ void ParticleManager::SetLineModel(LineModelPoints model)
 	ParticleModel = model;
 }
 
-void ParticleManager::SetManagers(EntityManager& managers)
+void ParticleManager::SetEntityManager(EntityManager& managers)
 {
 	EM = &managers;
 }

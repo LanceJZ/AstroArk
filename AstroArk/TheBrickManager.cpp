@@ -2,7 +2,7 @@
 
 TheBrickManager::TheBrickManager()
 {
-
+	EM.AddEntity(MainLayer = DBG_NEW Entity());
 }
 
 TheBrickManager::~TheBrickManager()
@@ -38,6 +38,8 @@ bool TheBrickManager::BeginRun()
 	BuildBricks();
 	PlaceBricks();
 
+	MainLayer->RotationVelocityZ = 0.01f;
+
 	return false;
 }
 
@@ -45,20 +47,24 @@ void TheBrickManager::Update()
 {
 	Common::Update();
 
+	bool reset = true;
+
 	for (const auto& brick : Bricks)
 	{
-		if (brick->Enabled) break;
-
-		NewGame();
+		if (brick->Enabled) reset = false;
 	}
+
+	if (reset) NewGame();
 }
 
 void TheBrickManager::NewGame()
 {
 	for (const auto& brick : Bricks)
 	{
-		brick->Enabled = true;
+		brick->Spawn();
 	}
+
+	MainLayer->RotationZ = 0.0f;
 }
 
 void TheBrickManager::BuildBricks()
@@ -74,6 +80,7 @@ void TheBrickManager::BuildBricks()
 		Bricks.back()->SetModel(BrickModel);
 		Bricks.back()->SetPlayerReference(Player);
 		Bricks.back()->SetSounds(HitSound, DestroySound);
+		Bricks.back()->SetParent(*MainLayer);
 		Bricks.back()->BeginRun();
 	}
 }

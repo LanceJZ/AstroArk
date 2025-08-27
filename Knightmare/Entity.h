@@ -11,6 +11,7 @@ public:
 	bool EntityOnly = false;
 	bool HideCollision = false;
 	bool NoCollision = false;
+	bool ShowCollision = false;
 	bool IsChild = false;
 	bool IsParent = false;
 	bool IsConnectedChild = true;
@@ -90,15 +91,20 @@ public:
 	float Z();
 	float GetAngleFromVectorZ(Vector3& target);
 	float GetAngleFromWorldVectorZ(Vector3& target);
+	float GetAngleFromVectors(Vector3& target);
+	float GetRotationTowardsTargetZ(Vector3& origin, Vector3& target,
+		float facingAngle, float magnitude);
 	float GetAngleFromVectorsZ(Vector3& origin, Vector3& target);
 
-	Vector3 GetVelocityFromAngleZ(float magnitude);
-	Vector3 GetVelocityFromAngleZ(float angle, float magnitude);
-	Vector3 GetVelocityFromVectorZ(Vector3& target, float magnitude);
-	Vector3 GetAccelerationToMaxAtRotation(float accelerationAmount, float topSpeed);
-	Vector3 GetWorldPosition();
-	Vector3 GetReflectionVelocity(Vector3& location,
-		Vector3& velocity, float amount, float reduction = 0);
+	Vector3& GetVelocityFromAngleZ(float magnitude);
+	Vector3& GetVelocityFromAngleZ(float angle, float magnitude);
+	Vector3& GetVelocityFromVectorZ(Vector3& target, float magnitude);
+	Vector3& GetReflectionVelocity(Vector3& location,
+		Vector3& velocity, float amountReflect,
+float reductionHit, float reductionLoss);
+	Vector3& GetAccelerationToMaxAtRotation(float accelerationAmount,
+		float topSpeed);
+	Vector3& GetWorldPosition();
 
 	virtual bool SetCamera(Camera* camera);
 	virtual void SetModel(Model &model, float scale);
@@ -112,7 +118,12 @@ public:
 	virtual void SetModel(LineModelPoints& lines, float scale);
 	virtual Model& Get3DModel();
 	virtual void Reset();
+	void SetAccelerationToMaxAtRotation(float accelerationAmount,
+		float topSpeed);
 	void SetAccelerationToZero(float decelerationAmount);
+	void SetRotateVelocity(Vector3& position, float turnSpeed, float speed);
+	void SetRotationZFromVector(Vector3& target);
+	void SetAimAtTargetZ(Vector3& target, float facingAngle, float magnitude);
 	void SetParent(Entity& parent);
 	void RemoveParent(Entity* parent);
 	void ClearParents();
@@ -122,7 +133,7 @@ public:
 	void CheckPlayfieldSidesWarp();
 	bool CheckPlayfieldSidesWarp(float left, float right);
 	void CheckPlayfieldHeightWarp(float top, float bottom);
-
+	void LeavePlay(float turnSpeed, float speed);
 protected:
 	std::vector<Vector3> LinePoints;
 	LineModelPoints Lines;

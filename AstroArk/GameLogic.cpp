@@ -57,6 +57,9 @@ void GameLogic::FixedUpdate()
 {
 	Common::FixedUpdate();
 
+	CheckUFOBrickCollusions();
+	CheckRockCollusions();
+
 	if (State == Pause) IsPaused();
 	if (State == MainMenu) InMainMenu();
 	if (State == Player->GameOver) IsOver();
@@ -149,9 +152,6 @@ void GameLogic::AddPlayerShipModels(int number)
 
 void GameLogic::GamePlay()
 {
-	CheckUFOBrickCollusions();
-	CheckRockCollusions();
-
 	if (Player->GetBeenHit())
 	{
 		//EM.ResetTimer(ExplodeTimerID);
@@ -199,7 +199,7 @@ void GameLogic::CheckUFOBrickCollusions()
 			{
 				if (!ufo->Enabled) continue;
 
-				if (brick->CirclesIntersect(*ufo) && ufo->Enabled)
+				if (brick->CirclesIntersect(*ufo))
 				{
 					ufo->Hit(brick->Position, { 0.0f });
 					break;
@@ -233,7 +233,9 @@ void GameLogic::CheckRockCollusions()
 			{
 				if (brick->Enabled)
 				{
-					if (rock->CirclesIntersect(*brick))
+					if (brick->CirclesIntersect(*rock) ||
+						brick->LeftSide->CirclesIntersect(*rock) ||
+						brick->RightSide->CirclesIntersect(*rock))
 					{
 						rock->Hit(brick->Position, { 0.0f });
 					}
@@ -247,7 +249,6 @@ void GameLogic::IsOver()
 {
 	State = MainMenu;
 	GameEnded = true;
-	CheckUFOBrickCollusions();
 }
 
 void GameLogic::InMainMenu()
@@ -271,8 +272,6 @@ void GameLogic::InMainMenu()
 			NewGame();
 		}
 	}
-
-	CheckUFOBrickCollusions();
 }
 
 void GameLogic::IsPaused()

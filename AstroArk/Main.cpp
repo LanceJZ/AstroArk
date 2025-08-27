@@ -38,7 +38,7 @@ int WinMain()
 	int windowHeight = 960; //height
 	int windowWidth = 1280; //width
 
-	InitWindow(windowWidth, windowHeight, "AstroArk - Alpha 0.04");
+	InitWindow(windowWidth, windowHeight, "AstroArk - Alpha 0.05");
 	InitAudioDevice();
 
 	Image icon = LoadImage("icon.png");
@@ -50,7 +50,7 @@ int WinMain()
 	SetTargetFPS(120);
 
 	Particles.Initialize();
-	Particles.SetManagers(EM);
+	Particles.SetEntityManager(EM);
 
 	// Define the camera to look into our 3D world
 	// Camera position

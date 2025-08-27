@@ -41,14 +41,13 @@ private:
 	LineModelPoints UFOModel = {};
 	LineModelPoints ShotModel = {};
 
-	Sound UFOExplodeSound;
-	Sound UFOFireSound;
-	Sound UFOActiveSound;
-
-	Sound RockExplodeSound;
+	Sound UFOExplodeSound = {};
+	Sound UFOFireSound = {};
+	Sound UFOActiveSound = {};
+	Sound RockExplodeSound = {};
 
 	ThePlayer *Player = nullptr;
-	LineModelPoints RockModels[4];
+	LineModelPoints RockModels[4] = {};
 
 	void SpawnUFO();
 	void SpawnRocks(Vector3 position, int count, TheRock::RockSize size);

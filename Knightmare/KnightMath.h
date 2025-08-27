@@ -33,13 +33,6 @@ public:
 	Color GetRandomColor();
 	Quaternion EulerToQuaternion(float yaw, float pitch, float roll);
 
-	void SetRotationZTowardsTargetZ(Vector3& target, float magnitude);
-	void SetAccelerationToMaxAtRotation(float accelerationAmount, float topSpeed);
-	void SetAccelerationToZero(float decelerationAmount);
-	void SetRotateVelocity(Vector3& position, float turnSpeed, float speed);
-	void SetRotationZFromVector(Vector3& target);
-	void SetAimAtTargetZ(Vector3& target, float facingAngle, float magnitute);
-
 private:
 	std::random_device RandomDevice = {};
 	std::mt19937_64 Random19937 = {};

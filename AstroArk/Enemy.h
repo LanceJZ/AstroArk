@@ -9,6 +9,7 @@ public:
 	Enemy();
 	virtual ~Enemy();
 
+	size_t HitTimerID = 0;
 	float ShotTimerAmount = 0.0f;
 
 	std::vector<Shot*> Shots;
@@ -42,6 +43,7 @@ protected:
 
 	int Points = 500;
 	float Speed = 200.0f;
+	float EnemySpeed = 0.0f;
 	float TurnSpeed = 1.45f;
 	float RotateMagnitude = PI / 2;
 	float ShotLifeTime = 0.0f;

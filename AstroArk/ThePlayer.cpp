@@ -140,7 +140,10 @@ void ThePlayer::ShieldHit(Vector3 position, Vector3 velocity)
 
 void ThePlayer::Hit(Vector3 position, Vector3 velocity)
 {
-	Velocity = GetReflectionVelocity(position, velocity, 200.0f);
+	Position = Vector3Add(Position,
+		Vector3Multiply(Vector3Multiply(Velocity, { -1.0f }), { 0.1f }));
+
+	Velocity = GetReflectionVelocity(position, velocity, 100.0f, 1.0f, 1.0f);
 }
 
 void ThePlayer::Reset()

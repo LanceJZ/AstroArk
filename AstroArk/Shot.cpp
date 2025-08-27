@@ -45,7 +45,10 @@ void Shot::Draw3D()
 
 void Shot::Hit(Vector3 position, Vector3 velocity)
 {
-	Velocity = GetReflectionVelocity(position, velocity, 200.0f);
+	Position = Vector3Add(Position,
+		Vector3Multiply(Vector3Multiply(Velocity, { -1.0f }), { 0.1f }));
+
+	Velocity = GetReflectionVelocity(position, velocity, 50.0f, 1.0f, 1.0f);
 }
 
 void Shot::Spawn(Vector3 position)

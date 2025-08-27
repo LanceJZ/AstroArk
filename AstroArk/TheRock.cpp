@@ -141,7 +141,10 @@ void TheRock::Hit()
 
 void TheRock::Hit(Vector3 position, Vector3 velocity)
 {
-	Velocity = GetReflectionVelocity(position, velocity, 100.0f);
+	Position = Vector3Add(Position,
+		Vector3Multiply(Vector3Multiply(Velocity, { -1.0f }), { 0.15f }));
+
+	Velocity = GetReflectionVelocity(position, velocity, 20.0f, 1.0f, 1.0f);
 }
 
 void TheRock::Reset()

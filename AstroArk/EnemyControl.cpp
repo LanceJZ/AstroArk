@@ -57,6 +57,7 @@ bool EnemyControl::BeginRun()
 	Common::BeginRun();
 
 	Reset();
+	NextWave();
 
 	return false;
 }

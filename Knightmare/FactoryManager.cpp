@@ -9,9 +9,9 @@ FactoryManager::~FactoryManager()
 {
 }
 
-void FactoryManager::SetEntityManager(EntityManager* entityManager)
+void FactoryManager::SetEntityManager(EntityManager& entityManager)
 {
-	EM = entityManager;
+	EM = &entityManager;
 }
 
 bool FactoryManager::Initialize()

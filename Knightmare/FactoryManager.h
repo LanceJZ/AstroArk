@@ -9,7 +9,7 @@ public:
 	FactoryManager();
 	virtual ~FactoryManager();
 
-	void SetEntityManager(EntityManager* entityManager);
+	void SetEntityManager(EntityManager& entityManager);
 
 	bool Initialize();
 	bool BeginRun();

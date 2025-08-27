@@ -39,7 +39,8 @@ void TheUFO::Update(float deltaTime)
 
 	CheckScreenEdge();
 
-	if (EM.TimerElapsed(VectorChangeTimerID)) ChangeVector();
+	if (EM.TimerElapsed(VectorChangeTimerID) &&
+		EM.TimerElapsed(HitTimerID)) ChangeVector();
 
 	if (EM.TimerElapsed(FireShotTimerID)) FireShot();
 
@@ -63,6 +64,13 @@ void TheUFO::Draw3D()
 	Enemy::Draw3D();
 }
 
+void TheUFO::Hit(Vector3 position, Vector3 velocity)
+{
+	Enemy::Hit(position, velocity);
+
+	//ChangeVector();
+}
+
 void TheUFO::Spawn()
 {
 	Enemy::Spawn();
@@ -84,6 +92,7 @@ void TheUFO::Spawn()
 		Velocity.x = MaxSpeed;
 	}
 
+	EnemySpeed = MaxSpeed;
 
 	Enemy::Spawn(position);
 }
@@ -92,7 +101,7 @@ void TheUFO::Destroy()
 {
 	Enemy::Destroy();
 
-	PlaySound(ExplodeSound);
+
 }
 
 void TheUFO::Reset()
@@ -102,9 +111,7 @@ void TheUFO::Reset()
 
 void TheUFO::FireShot()
 {
-	if (Player->GameOver) return;
-
-	PlaySound(FireSound);
+	if (!Player->GameOver) PlaySound(FireSound);
 
 	float angle = 0;
 	float shotSpeed = 325;
@@ -159,24 +166,46 @@ void TheUFO::ChangeVector()
 
 	if (GetRandomValue(1, 10) > 2)
 	{
-		if ((int)Velocity.y == 0)
+		if (GetRandomValue(1, 10) < 5)
 		{
-			if (GetRandomValue(1, 10) < 5)
-			{
-				Velocity.y = MaxSpeed;
-			}
-			else
-			{
-				Velocity.y = -MaxSpeed;
-			}
+			Velocity.y = MaxSpeed;
 		}
 		else
 		{
-			if (Position.y < WindowHalfHeight - (Radius * 3) &&
-				Position.y > -WindowHalfHeight - (Radius * 3))
-			{
-				Velocity.y = 0;
-			}
+			Velocity.y = -MaxSpeed;
+		}
+
+		if (GetRandomValue(1, 10) < 5)
+		{
+			Velocity.x = MaxSpeed;
+		}
+		else
+		{
+			Velocity.x = -MaxSpeed;
+		}
+	}
+	else
+	{
+		if (GetRandomValue(1, 10) < 5)
+		{
+			Velocity.y = MaxSpeed;
+			Velocity.x = 0;
+		}
+		else
+		{
+			Velocity.y = -MaxSpeed;
+			Velocity.x = 0;
+		}
+
+		if (GetRandomValue(1, 10) < 5)
+		{
+			Velocity.x = MaxSpeed;
+			Velocity.y = 0;
+		}
+		else
+		{
+			Velocity.x = -MaxSpeed;
+			Velocity.y = 0;
 		}
 	}
 }

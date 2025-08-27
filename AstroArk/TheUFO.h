@@ -18,6 +18,7 @@ public:
 	void FixedUpdate(float deltaTime);
 	void Draw3D();
 
+	void Hit(Vector3 position, Vector3 velocity);
 	void Spawn();
 	void Destroy();
 	void Reset();
@@ -28,7 +29,6 @@ private:
 
 	unsigned int WaveNumber = 0;
 
-	Sound ExplodeSound = { 0 };
 	Sound FireSound = { 0 };
 	Sound ActiveSound = { 0 };
 

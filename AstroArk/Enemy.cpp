@@ -3,6 +3,7 @@
 Enemy::Enemy()
 {
 	ShotTimerID = EM.AddTimer();
+	HitTimerID = EM.AddTimer(0.1f);
 }
 
 Enemy::~Enemy()
@@ -106,7 +107,9 @@ void Enemy::Hit()
 {
 	Entity::Hit();
 
+	if (!Player->GameOver) PlaySound(ExplodeSound);
 
+	Explode();
 }
 
 void Enemy::Reset()
@@ -130,12 +133,20 @@ void Enemy::Destroy()
 
 void Enemy::Hit(Vector3 position, Vector3 velocity)
 {
-	Velocity = GetReflectionVelocity(position, velocity, 200.0f);
+	if (!EM.TimerElapsed(HitTimerID)) return;
+
+	EM.ResetTimer(HitTimerID);
+
+	Position = Vector3Add(Position,
+		Vector3Multiply(Vector3Multiply(Velocity, { -1.0f }), { 0.15f }));
+
+	Velocity = GetReflectionVelocity(position, velocity,
+		EnemySpeed * 0.75f, 0.250f, 0.250f);
 }
 
 void Enemy::Shoot()
 {
-	PlaySound(FireSound);
+	if (!Player->GameOver) PlaySound(FireSound);
 
 	EM.ResetTimer(ShotTimerID);
 

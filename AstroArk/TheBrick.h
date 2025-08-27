@@ -23,6 +23,7 @@ public:
 	void Draw3D();
 
 	void Spawn(Vector3 position);
+	void Spawn();
 	void Destroy();
 
 	void Hit(Vector3 position, Vector3 velocity);

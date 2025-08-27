@@ -23,10 +23,12 @@ public:
 	void NewGame();
 
 private:
-	Sound HitSound;
-	Sound DestroySound;
+	Sound HitSound = { 0 };
+	Sound DestroySound = { 0 };
 
 	Model BrickModel = { 0 };
+
+	Entity* MainLayer = nullptr;
 
 	void BuildBricks();
 	void PlaceBricks();

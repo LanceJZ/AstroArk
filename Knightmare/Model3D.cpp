@@ -26,16 +26,16 @@ bool Model3D::Initialize()
 	return false;
 }
 
+void Model3D::SetModelWithTexture(Model &model, Texture2D &texture)
+{
+	Entity::SetModelWithTexture(model, texture);
+}
+
 bool Model3D::BeginRun()
 {
 	Entity::BeginRun();
 
 	return false;
-}
-
-void Model3D::SetModelWithTexture(Model &model, Texture2D &texture)
-{
-	Entity::SetModelWithTexture(model, texture);
 }
 
 bool Model3D::SetCamera(Camera* camera)
@@ -51,17 +51,17 @@ void Model3D::Input()
 
 void Model3D::Update(float deltaTime)
 {
-	if (Enabled) Entity::Update(deltaTime);
-}
-
-void Model3D::FixedUpdate(float deltaTime)
-{
-	if (Enabled) Entity::FixedUpdate(deltaTime);
+	Entity::Update(deltaTime);
 }
 
 void Model3D::AlwaysUpdate(float deltaTime)
 {
 	Entity::AlwaysUpdate(deltaTime);
+}
+
+void Model3D::FixedUpdate(float deltaTime)
+{
+	Entity::FixedUpdate(deltaTime);
 }
 
 void Model3D::Draw3D()
@@ -137,6 +137,11 @@ void Model3D::Draw3D()
 	{
 		DrawModel(TheModel, Position, Scale, ModelColor);// Draw stationary 3D model
 	}
+}
+
+void Model3D::Draw2D()
+{
+	Entity::Draw2D();
 }
 
 void Model3D::SetModel(Model &model, float scale)
